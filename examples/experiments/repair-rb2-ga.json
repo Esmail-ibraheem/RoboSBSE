@@ -1,0 +1,26 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "repair-rb2-ga",
+  "description": "Program repair of RB2 (wrong comparison operator in the completion check) with genetic search; plausible patches are minimised, validated on held-out tests and compared with the reference fix.",
+  "seed": 1,
+  "budget": {
+    "maxEvaluations": 300
+  },
+  "problem": {
+    "type": "program-repair",
+    "params": {
+      "subject": "rb2-comparison",
+      "workers": 2
+    }
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 20
+    }
+  },
+  "options": {
+    "threads": 2,
+    "maxFailureRecords": 8
+  }
+}

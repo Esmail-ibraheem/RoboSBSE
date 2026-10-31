@@ -1,0 +1,76 @@
+{
+  "schema": "robosbse.tasks/1",
+  "map": "builtin:warehouse",
+  "depot": {
+    "x": 1.5,
+    "y": 1.5
+  },
+  "charger": {
+    "x": 1.0,
+    "y": 5.25
+  },
+  "capacity": 2,
+  "speed": 0.8,
+  "serviceTime": 4.0,
+  "chargeRate": 60.0,
+  "reserve": 0.1,
+  "name": "orders-4",
+  "description": "4 orders (8 stops, 40 320 priority lists) - small enough for exhaustive search, so the optimum is known.",
+  "initialBattery": 1.0,
+  "tasks": [
+    {
+      "id": "T1",
+      "pickup": {
+        "x": 4.5,
+        "y": 5.25
+      },
+      "delivery": {
+        "x": 6.5,
+        "y": 12.8
+      },
+      "deadline": 90,
+      "after": []
+    },
+    {
+      "id": "T2",
+      "pickup": {
+        "x": 14.0,
+        "y": 5.25
+      },
+      "delivery": {
+        "x": 23.0,
+        "y": 1.5
+      },
+      "deadline": 140,
+      "after": []
+    },
+    {
+      "id": "T3",
+      "pickup": {
+        "x": 6.0,
+        "y": 2.0
+      },
+      "delivery": {
+        "x": 6.5,
+        "y": 12.8
+      },
+      "deadline": 160,
+      "after": []
+    },
+    {
+      "id": "T4",
+      "pickup": {
+        "x": 16.0,
+        "y": 2.0
+      },
+      "delivery": {
+        "x": 23.0,
+        "y": 1.5
+      },
+      "deadline": 200,
+      "after": [
+        "T2"
+      ]
+    }
+  ]
+}

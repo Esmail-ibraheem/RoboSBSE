@@ -1,0 +1,19 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "warehouse-orders4-exhaustive",
+  "description": "Exhaustive search over all 8! = 40 320 priority lists of the small order book: a proven optimum to calibrate the metaheuristics against.",
+  "seed": 1,
+  "budget": {
+    "maxEvaluations": 50000
+  },
+  "problem": {
+    "type": "warehouse-scheduling",
+    "params": {
+      "tasks": "builtin:orders-4"
+    }
+  },
+  "algorithm": {
+    "type": "exhaustive-search",
+    "params": {}
+  }
+}

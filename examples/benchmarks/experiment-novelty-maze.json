@@ -1,0 +1,62 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-novelty-maze",
+  "description": "Phase 3: novelty search against fitness-guided search on the maze, where the progress term of the fitness (geodesic distance left) points into dead ends. Measures behaviour coverage (where routes end, 10 x 10 grid) and success (goal reached).",
+  "runs": 15,
+  "baseSeed": 700,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 6000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:maze",
+    "params": {
+      "waypoints": 10,
+      "controller": "pure-pursuit",
+      "objective": "time",
+      "maxSteps": 2400,
+      "repair": true
+    }
+  },
+  "algorithms": [
+    {
+      "type": "genetic-algorithm",
+      "label": "GA",
+      "params": {
+        "populationSize": 60,
+        "crossover": "one-point",
+        "mutationSigma": 0.08,
+        "elitism": 3
+      }
+    },
+    {
+      "type": "novelty-search",
+      "label": "Novelty Search",
+      "params": {
+        "populationSize": 60,
+        "offspring": 60,
+        "mutationSigma": 0.08
+      }
+    },
+    {
+      "type": "novelty-search",
+      "label": "Novelty + Fitness (w = 0.5)",
+      "params": {
+        "populationSize": 60,
+        "offspring": 60,
+        "mutationSigma": 0.08,
+        "fitnessWeight": 0.5
+      }
+    },
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    }
+  ],
+  "options": {
+    "archiveSize": 0
+  },
+  "compareBy": "behaviourCoverage",
+  "reference": true
+}

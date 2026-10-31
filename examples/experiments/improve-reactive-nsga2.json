@@ -1,0 +1,25 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "improve-reactive-nsga2",
+  "description": "Genetic improvement of the correct reactive controller with NSGA-II: trade-offs between travel time and counted work per control step, every candidate passing the correctness suite; improvements validated on held-out tests.",
+  "seed": 1,
+  "budget": {
+    "maxEvaluations": 300
+  },
+  "problem": {
+    "type": "genetic-improvement",
+    "params": {
+      "workers": 2
+    }
+  },
+  "algorithm": {
+    "type": "nsga2",
+    "params": {
+      "populationSize": 20
+    }
+  },
+  "options": {
+    "threads": 2,
+    "maxFailureRecords": 8
+  }
+}

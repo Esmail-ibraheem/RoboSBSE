@@ -1,0 +1,47 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-F-rb3-turn-direction",
+  "description": "Experiment F on repair subject rb3-turn-direction: can search-based mutation find valid patches? Random patch search, genetic search and local search (stochastic hill climbing with restarts) with the same budget of candidate evaluations. Success = a plausible patch (passes every search test); the best patch of each run is minimised and validated on held-out tests and against the reference fix.",
+  "runs": 10,
+  "baseSeed": 1100,
+  "threads": 2,
+  "budget": {
+    "maxEvaluations": 300
+  },
+  "problem": {
+    "type": "program-repair",
+    "params": {
+      "subject": "rb3-turn-direction",
+      "workers": 1
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random patch search"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic search",
+      "params": {
+        "populationSize": 20,
+        "elitism": 2
+      }
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Local search (stochastic HC)",
+      "params": {
+        "variant": "stochastic",
+        "maxFailures": 30,
+        "restarts": true
+      }
+    }
+  ],
+  "options": {
+    "archiveSize": 0,
+    "maxTargets": 20
+  },
+  "compareBy": "timeToTarget",
+  "reference": false
+}

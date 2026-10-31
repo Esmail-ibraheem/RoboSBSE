@@ -1,0 +1,61 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-island-maze",
+  "description": "Phase 3: one panmictic GA of 100 against four islands of 25 (ring migration of 2 every 10 generations) and four isolated islands, same budget, on the maze.",
+  "runs": 15,
+  "baseSeed": 800,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 6000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:maze",
+    "params": {
+      "waypoints": 10,
+      "controller": "pure-pursuit",
+      "objective": "time",
+      "maxSteps": 2400,
+      "repair": true
+    }
+  },
+  "algorithms": [
+    {
+      "type": "genetic-algorithm",
+      "label": "Panmictic GA (100)",
+      "params": {
+        "populationSize": 100,
+        "crossover": "one-point",
+        "mutationSigma": 0.08,
+        "elitism": 4
+      }
+    },
+    {
+      "type": "island-ga",
+      "label": "Islands 4 x 25, ring",
+      "params": {
+        "islands": 4,
+        "islandSize": 25,
+        "crossover": "one-point",
+        "mutationSigma": 0.08,
+        "elitism": 1
+      }
+    },
+    {
+      "type": "island-ga",
+      "label": "Islands 4 x 25, isolated",
+      "params": {
+        "islands": 4,
+        "islandSize": 25,
+        "migrationInterval": 0,
+        "crossover": "one-point",
+        "mutationSigma": 0.08,
+        "elitism": 1
+      }
+    }
+  ],
+  "options": {
+    "archiveSize": 0
+  },
+  "reference": true
+}

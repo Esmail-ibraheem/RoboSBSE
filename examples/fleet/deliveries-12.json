@@ -1,0 +1,28 @@
+{
+  "schema": "robosbse.fleet/1",
+  "name": "deliveries-12",
+  "description": "Three robots in the delivery centre, twelve transport jobs: rack-to-dispatch orders, inbound goods from the loading docks to the racks, and two returns. Each robot carries one item at a time and returns to its depot.",
+  "map": "builtin:delivery-center",
+  "robots": [
+    {"x": 1.0, "y": 2.0},
+    {"x": 1.0, "y": 8.0},
+    {"x": 1.0, "y": 14.0}
+  ],
+  "speed": 0.8,
+  "serviceTime": 3.0,
+  "returnHome": true,
+  "tasks": [
+    {"label": "T1", "pickup": {"x": 5.5, "y": 5.0}, "delivery": {"x": 22.5, "y": 2.0}},
+    {"label": "T2", "pickup": {"x": 8.5, "y": 8.0}, "delivery": {"x": 22.5, "y": 5.0}},
+    {"label": "T3", "pickup": {"x": 15.5, "y": 11.0}, "delivery": {"x": 22.5, "y": 8.0}},
+    {"label": "T4", "pickup": {"x": 18.5, "y": 2.0}, "delivery": {"x": 22.5, "y": 11.0}},
+    {"label": "T5", "pickup": {"x": 6.5, "y": 14.5}, "delivery": {"x": 22.5, "y": 14.0}},
+    {"label": "T6", "pickup": {"x": 2.5, "y": 4.5}, "delivery": {"x": 16.5, "y": 8.0}},
+    {"label": "T7", "pickup": {"x": 2.5, "y": 11.5}, "delivery": {"x": 7.0, "y": 11.0}},
+    {"label": "T8", "pickup": {"x": 17.0, "y": 5.0}, "delivery": {"x": 21.5, "y": 3.5}},
+    {"label": "T9", "pickup": {"x": 12.0, "y": 10.5}, "delivery": {"x": 2.5, "y": 7.5}},
+    {"label": "T10", "pickup": {"x": 9.0, "y": 2.0}, "delivery": {"x": 19.0, "y": 14.5}},
+    {"label": "T11", "pickup": {"x": 15.0, "y": 14.5}, "delivery": {"x": 22.5, "y": 12.5}},
+    {"label": "T12", "pickup": {"x": 2.5, "y": 1.5}, "delivery": {"x": 12.0, "y": 4.5}}
+  ]
+}

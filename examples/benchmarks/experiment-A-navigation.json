@@ -1,0 +1,49 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-A-navigation-obstacle-course",
+  "description": "Experiment A: which metaheuristic produces the best route under a fixed fitness-evaluation budget? A* is reported separately as a conventional reference.",
+  "runs": 15,
+  "baseSeed": 100,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4,
+      "controller": "waypoint-follower",
+      "objective": "time"
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (first, restarts)",
+      "params": {
+        "variant": "first",
+        "stepSize": 0.03
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing",
+      "params": {
+        "stepSize": 0.05
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 40
+      }
+    }
+  ],
+  "reference": true
+}

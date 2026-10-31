@@ -1,0 +1,65 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-E-genetic-programming",
+  "description": "Experiment E: can genetic programming evolve reactive controllers that generalise beyond their training environments? Programs are trained on 2, 4 or 8 maps and judged on 8 unseen test maps (warehouse, testing arena, 6 generated maps); random program search with 8 training maps is the baseline and the hand-written reactive controller the conventional reference.",
+  "runs": 10,
+  "baseSeed": 1000,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 4000
+  },
+  "problem": {
+    "type": "controller-synthesis",
+    "params": {
+      "maps": "empty-field,obstacle-course,generated:scatter:1,generated:scatter:2",
+      "testMaps": "warehouse,testing-arena,generated:scatter:101,generated:scatter:102,generated:scatter:103,generated:scatter:104,generated:scatter:105,generated:scatter:106"
+    }
+  },
+  "algorithms": [
+    {
+      "type": "genetic-algorithm",
+      "label": "GP, 2 training maps",
+      "params": {
+        "populationSize": 50,
+        "elitism": 2
+      },
+      "problemParams": {
+        "maps": "empty-field,obstacle-course"
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "GP, 4 training maps",
+      "params": {
+        "populationSize": 50,
+        "elitism": 2
+      },
+      "problemParams": {
+        "maps": "empty-field,obstacle-course,generated:scatter:1,generated:scatter:2"
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "GP, 8 training maps",
+      "params": {
+        "populationSize": 50,
+        "elitism": 2
+      },
+      "problemParams": {
+        "maps": "empty-field,obstacle-course,generated:scatter:1,generated:scatter:2,generated:scatter:3,generated:scatter:4,generated:scatter:5,generated:scatter:6"
+      }
+    },
+    {
+      "type": "random-search",
+      "label": "Random programs, 8 training maps",
+      "problemParams": {
+        "maps": "empty-field,obstacle-course,generated:scatter:1,generated:scatter:2,generated:scatter:3,generated:scatter:4,generated:scatter:5,generated:scatter:6"
+      }
+    }
+  ],
+  "options": {
+    "archiveSize": 0
+  },
+  "compareBy": "testFitness",
+  "reference": true
+}

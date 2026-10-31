@@ -1,0 +1,66 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-C-full-bug2",
+  "description": "Experiment C (Phase 3, complete): random, hill-climbing, genetic and novelty-based test generation against BUG2-BRAKING. Fitness = collision robustness (novelty search uses the controller's behaviour instead). Success = at least one failure within the budget; the first failure of every run is minimised (ddmin + numeric shrinking).",
+  "runs": 15,
+  "baseSeed": 200,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive-bug2-braking",
+      "properties": "safety",
+      "fitness": "collision"
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Testing"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (stochastic)",
+      "params": {
+        "variant": "stochastic",
+        "stepSize": 0.08,
+        "maxFailures": 40
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Search",
+      "params": {
+        "populationSize": 50
+      }
+    },
+    {
+      "type": "novelty-search",
+      "label": "Novelty Search",
+      "params": {
+        "populationSize": 30,
+        "offspring": 30
+      }
+    },
+    {
+      "type": "novelty-search",
+      "label": "Novelty + Fitness (w = 0.5)",
+      "params": {
+        "populationSize": 30,
+        "offspring": 30,
+        "fitnessWeight": 0.5
+      }
+    }
+  ],
+  "options": {
+    "minimizeFailures": true,
+    "archiveSize": 0
+  },
+  "describeFailures": true,
+  "compareBy": "timeToTarget",
+  "reference": false
+}

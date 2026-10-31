@@ -1,0 +1,28 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "tuning-reactive-ga",
+  "description": "Tune the map-free reactive controller (speed limit, margin, heading gain, free distance, approach gain) for travel time + 20 x collision risk over three maps; the testing arena is held out.",
+  "seed": 3,
+  "budget": {
+    "maxEvaluations": 600
+  },
+  "problem": {
+    "type": "controller-tuning",
+    "params": {
+      "controller": "reactive",
+      "maps": "obstacle-course,empty-field,warehouse",
+      "validationMaps": "testing-arena",
+      "aggregate": "mean",
+      "objective": "weighted",
+      "weightTime": 1.0,
+      "weightEnergy": 0.0,
+      "weightRisk": 20.0
+    }
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 20
+    }
+  }
+}

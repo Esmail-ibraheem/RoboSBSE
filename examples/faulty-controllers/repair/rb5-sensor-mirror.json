@@ -1,0 +1,17 @@
+{
+  "schema": "robosbse.repair-subject/1",
+  "id": "rb5-sensor-mirror",
+  "name": "RB5: Incorrect sensor interpretation",
+  "purpose": "program-repair",
+  "defectKind": "Incorrect sensor interpretation",
+  "defect": "Range readings are converted with theta - rayAngle instead of theta + rayAngle, which mirrors every obstacle point across the robot's heading.",
+  "className": "subjects.SensorMirrorBug",
+  "source": "src/subjects/SensorMirrorBug.java",
+  "scope": [],
+  "referenceFix": {
+    "find": "double a = obs.theta() - robot.rayAngle(i);",
+    "replace": "double a = obs.theta() + robot.rayAngle(i);"
+  },
+  "failureRecords": [],
+  "heldOutRecords": []
+}

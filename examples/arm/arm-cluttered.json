@@ -1,0 +1,49 @@
+{
+  "schema": "robosbse.arm/1",
+  "width": 3.0,
+  "height": 2.0,
+  "base": {
+    "x": 1.5,
+    "y": 0.1
+  },
+  "links": [
+    0.9,
+    0.7
+  ],
+  "jointMin": [
+    0.0,
+    -2.8
+  ],
+  "jointMax": [
+    3.141592653589793,
+    2.8
+  ],
+  "linkRadius": 0.04,
+  "maxJointSpeed": 1.0,
+  "home": [
+    1.5707963267948966,
+    0.0
+  ],
+  "name": "arm-cluttered",
+  "description": "Two-link arm whose straight joint-space move to the low target sweeps through a post; the target itself is reachable without contact.",
+  "obstacles": [
+    {
+      "type": "rect",
+      "x": 2.0,
+      "y": 1.0,
+      "w": 0.14,
+      "h": 0.55
+    },
+    {
+      "type": "circle",
+      "x": 1.05,
+      "y": 1.5,
+      "r": 0.12
+    }
+  ],
+  "target": {
+    "x": 2.35,
+    "y": 0.4
+  },
+  "tasks": []
+}

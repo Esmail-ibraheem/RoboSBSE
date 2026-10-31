@@ -1,0 +1,25 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "warehouse-orders8-tabu",
+  "description": "Tabu search over swap moves of the priority list, with a random candidate list of 20 moves per iteration.",
+  "seed": 1,
+  "budget": {
+    "maxEvaluations": 4000
+  },
+  "problem": {
+    "type": "warehouse-scheduling",
+    "params": {
+      "tasks": "builtin:orders-8",
+      "objective": "weighted",
+      "weightTardiness": 5
+    }
+  },
+  "algorithm": {
+    "type": "tabu-search",
+    "params": {
+      "neighbourhood": "swap",
+      "tenure": 12,
+      "candidates": 20
+    }
+  }
+}

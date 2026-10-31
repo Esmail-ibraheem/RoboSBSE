@@ -1,0 +1,28 @@
+{
+  "schema": "robosbse.suite/1",
+  "name": "phase4",
+  "description": "All Phase 4 experiments: genetic programming (Experiment E), automated program repair (Experiment F, five subjects) and genetic improvement.",
+  "items": [
+    {
+      "benchmark": "../benchmarks/experiment-E-gp.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb1-stopping-distance.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb2-comparison.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb3-turn-direction.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb4-boundary-check.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb5-sensor-mirror.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-GI-reactive.json"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+# build outputs
+backend/java-engine/build/
+backend/java-engine/.gradle/
+frontend/rust-ui/target/
+# experiment outputs (reproducible from their configurations)
+experiments/results/
+experiments/benchmarks/
+experiments/configs/
+experiments/phase3/
+experiments/coverage/
+experiments/phase4/
+experiments/phase5/
+experiments/suites/
+# machine-specific
+scripts/env.local.ps1
+scripts/env.local.sh
+robosbse-ui.json
+*.log
+.idea/
+.vscode/

@@ -1,0 +1,30 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "testing-bug3-branch",
+  "description": "White-box test generation for BUG-3: approach level + branch distance to the faulty low-battery branch first, then velocity robustness. The battery gene starts at 0.2, so the branch is only reached by draining the battery.",
+  "seed": 500,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive-bug3-boost",
+      "properties": "velocity",
+      "fitness": "branch:low-battery-boost:true",
+      "minBattery": 0.2
+    }
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 30
+    }
+  },
+  "options": {
+    "minimizeFailures": true,
+    "maxFailureRecords": 3,
+    "threads": 4
+  }
+}

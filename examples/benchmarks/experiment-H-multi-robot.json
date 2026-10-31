@@ -1,0 +1,53 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-H-multi-robot",
+  "description": "Phase 5, multi-robot task allocation: three robots, twelve transport jobs in the delivery centre. Objective makespan + 0.1 x total distance; greedy list scheduling is the reference.",
+  "runs": 15,
+  "baseSeed": 1400,
+  "threads": 2,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "multi-robot-allocation",
+    "params": {
+      "fleet": "deliveries-12"
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (first, restarts)",
+      "params": {
+        "variant": "first"
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 50
+      }
+    },
+    {
+      "type": "particle-swarm",
+      "label": "Particle Swarm Optimisation"
+    },
+    {
+      "type": "nsga2",
+      "label": "NSGA-II",
+      "params": {
+        "populationSize": 50
+      }
+    }
+  ],
+  "reference": true
+}

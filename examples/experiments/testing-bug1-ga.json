@@ -1,0 +1,34 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "testing-bug1-ga",
+  "description": "GA searches for scenarios in which BUG-1 (lost scan treated as free space) violates a safety property.",
+  "seed": 7,
+  "budget": {
+    "maxEvaluations": 1500
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive-bug1-dropout",
+      "properties": "safety",
+      "fitness": "collision",
+      "obstacleSlots": 4,
+      "maxSteps": 1200,
+      "simulationSeed": 1
+    }
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 30,
+      "crossover": "uniform",
+      "mutationSigma": 0.15,
+      "elitism": 2
+    }
+  },
+  "options": {
+    "minimizeFailures": true,
+    "maxFailureRecords": 5
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "warehouse-orders8-nsga2",
+  "description": "Multi-objective scheduling: NSGA-II approximates the makespan / tardiness / energy trade-off.",
+  "seed": 1,
+  "budget": {
+    "maxEvaluations": 4000
+  },
+  "problem": {
+    "type": "warehouse-scheduling",
+    "params": {
+      "tasks": "builtin:orders-8",
+      "objective": "weighted",
+      "weightTardiness": 5
+    }
+  },
+  "algorithm": {
+    "type": "nsga2",
+    "params": {
+      "populationSize": 40,
+      "crossover": "order",
+      "mutation": "inversion"
+    }
+  }
+}

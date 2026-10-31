@@ -1,0 +1,22 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "gp-controller",
+  "description": "Genetic programming of a reactive controller on four training maps; the result reports the best program on four unseen test maps and the hand-written reactive controller on both sets.",
+  "seed": 1003,
+  "budget": {
+    "maxEvaluations": 4000
+  },
+  "problem": {
+    "type": "controller-synthesis",
+    "params": {}
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 50
+    }
+  },
+  "options": {
+    "threads": 4
+  }
+}

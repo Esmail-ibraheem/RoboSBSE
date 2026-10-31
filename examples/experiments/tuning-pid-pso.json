@@ -1,0 +1,25 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "tuning-pid-pso",
+  "description": "Tune the PID heading controller (kp, ki, kd, cruise speed, switch radius, turn-in-place angle) with PSO across three training maps; the maze is held out for validation.",
+  "seed": 3,
+  "budget": {
+    "maxEvaluations": 1000
+  },
+  "problem": {
+    "type": "controller-tuning",
+    "params": {
+      "controller": "pid-heading",
+      "maps": "obstacle-course,warehouse,empty-field",
+      "validationMaps": "maze",
+      "objective": "time",
+      "aggregate": "mean"
+    }
+  },
+  "algorithm": {
+    "type": "particle-swarm",
+    "params": {
+      "swarmSize": 20
+    }
+  }
+}

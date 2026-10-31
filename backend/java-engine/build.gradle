@@ -1,0 +1,108 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'org.robosbse'
+version = '0.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+    // AST-based source mutations for genetic improvement and program repair.
+    implementation 'com.github.javaparser:javaparser-core:3.26.2'
+
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xlint:unchecked', '-Xlint:deprecation']
+}
+
+application {
+    mainClass = 'org.robosbse.cli.Main'
+    applicationName = 'robosbse-engine'
+}
+
+// The example maps are the single source of truth for built-in environments;
+// they are bundled into the jar so the engine also works without the repository.
+processResources {
+    from('../../examples/maps') {
+        include '*.json'
+        into 'robosbse/maps'
+    }
+    from('../../examples/warehouse') {
+        include '*.json'
+        into 'robosbse/tasks'
+    }
+    from('../../examples/faulty-controllers/repair') {
+        include '*.json', 'src/**/*.java', 'tests/*.json'
+        into 'robosbse/repair'
+    }
+    from('../../examples/arm') {
+        include '*.json'
+        into 'robosbse/arm'
+    }
+    from('../../examples/fleet') {
+        include '*.json'
+        into 'robosbse/fleet'
+    }
+    from('../../examples/faulty-controllers/regressions') {
+        include '*.json'
+        into 'robosbse/regressions'
+    }
+}
+
+// Self-contained jar that the Rust UI launches with `java -jar`.
+tasks.register('engineJar', Jar) {
+    group = 'build'
+    description = 'Builds build/libs/robosbse-engine.jar including all runtime dependencies.'
+    archiveFileName = 'robosbse-engine.jar'
+    manifest {
+        attributes 'Main-Class': application.mainClass.get(),
+                   'Implementation-Version': project.version
+    }
+    from sourceSets.main.output
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'module-info.class'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.named('build') {
+    dependsOn 'engineJar'
+}
+
+test {
+    useJUnitPlatform {
+        // Long-running statistical benchmark tests run with: gradlew benchmarkTest
+        excludeTags 'benchmark'
+    }
+    maxHeapSize = '1g'
+    testLogging {
+        events 'failed', 'skipped'
+        exceptionFormat = 'full'
+        showStandardStreams = false
+    }
+    systemProperty 'robosbse.repoRoot', file('../..').absolutePath
+}
+
+tasks.register('benchmarkTest', Test) {
+    group = 'verification'
+    description = 'Runs the slower benchmark-style tests (search vs. random comparisons).'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform { includeTags 'benchmark' }
+    maxHeapSize = '2g'
+    testLogging { events 'passed', 'failed'; exceptionFormat = 'full'; showStandardStreams = true }
+    systemProperty 'robosbse.repoRoot', file('../..').absolutePath
+}

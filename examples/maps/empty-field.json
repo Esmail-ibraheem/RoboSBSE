@@ -1,0 +1,11 @@
+{
+  "schema": "robosbse.map/1",
+  "name": "empty-field",
+  "description": "Empty 20 x 20 m navigation field. Sanity baseline: the optimal route is the straight line.",
+  "width": 20,
+  "height": 20,
+  "start": { "x": 2.0, "y": 2.0, "theta": 0.0 },
+  "goal": { "x": 18.0, "y": 18.0 },
+  "goalTolerance": 0.3,
+  "obstacles": []
+}

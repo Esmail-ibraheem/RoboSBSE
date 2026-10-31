@@ -1,0 +1,14 @@
+{
+  "schema": "robosbse.map/1",
+  "name": "testing-arena",
+  "description": "12 x 12 m arena for search-based testing. Two fixed pillars; generated scenarios add start, goal, obstacles and conditions.",
+  "width": 12,
+  "height": 12,
+  "start": { "x": 1.5, "y": 1.5, "theta": 0.0 },
+  "goal": { "x": 10.5, "y": 10.5 },
+  "goalTolerance": 0.3,
+  "obstacles": [
+    { "type": "circle", "x": 4.0, "y": 8.0, "r": 0.5 },
+    { "type": "rect", "x": 7.5, "y": 3.5, "w": 1.0, "h": 1.0 }
+  ]
+}

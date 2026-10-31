@@ -1,0 +1,25 @@
+{
+  "schema": "robosbse.suite/1",
+  "name": "phase5",
+  "description": "All Phase 5 experiments: robotic arm (inverse kinematics, trajectory, pick and place), multi-robot task allocation and the dynamic obstacle course.",
+  "items": [
+    {
+      "benchmark": "../benchmarks/experiment-G-arm-ik-cluttered.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-G-arm-ik-three-link.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-G-arm-trajectory.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-G-arm-pick-place.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-H-multi-robot.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-I-dynamic-course.json"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "testing-bug4-hc",
+  "description": "Stochastic hill climbing on completion robustness finds BUG-4 (Manhattan distance in the completion check).",
+  "seed": 5,
+  "budget": {
+    "maxEvaluations": 1000
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive-bug4-completion",
+      "properties": "safety",
+      "fitness": "completion",
+      "obstacleSlots": 4,
+      "maxSteps": 1200,
+      "simulationSeed": 1
+    }
+  },
+  "algorithm": {
+    "type": "hill-climbing",
+    "params": {
+      "variant": "stochastic",
+      "stepSize": 0.08,
+      "maxFailures": 40
+    }
+  },
+  "options": {
+    "minimizeFailures": true,
+    "maxFailureRecords": 5
+  }
+}

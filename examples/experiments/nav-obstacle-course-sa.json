@@ -1,0 +1,28 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "nav-obstacle-course-sa",
+  "description": "Simulated annealing with geometric cooling (alpha derived from the budget) on the obstacle course.",
+  "seed": 42,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4,
+      "controller": "waypoint-follower",
+      "objective": "time",
+      "maxSteps": 2400,
+      "repair": true
+    }
+  },
+  "algorithm": {
+    "type": "simulated-annealing",
+    "params": {
+      "cooling": "geometric",
+      "initialAcceptance": 0.8,
+      "stepSize": 0.05
+    }
+  }
+}

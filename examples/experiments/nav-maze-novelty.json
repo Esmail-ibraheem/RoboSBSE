@@ -1,0 +1,31 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "nav-maze-novelty",
+  "description": "Novelty search on the maze: rewards routes that end somewhere new (behaviour = final position and positions at 75/50/25% of the episode). See the behaviourCoverage and archiveSize series.",
+  "seed": 42,
+  "budget": {
+    "maxEvaluations": 6000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:maze",
+    "params": {
+      "waypoints": 10,
+      "controller": "pure-pursuit",
+      "objective": "time",
+      "maxSteps": 2400,
+      "repair": true
+    }
+  },
+  "algorithm": {
+    "type": "novelty-search",
+    "params": {
+      "populationSize": 60,
+      "offspring": 60,
+      "mutationSigma": 0.08
+    }
+  },
+  "options": {
+    "threads": 4
+  }
+}

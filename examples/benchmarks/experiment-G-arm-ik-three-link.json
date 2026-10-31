@@ -1,0 +1,51 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-G-arm-ik-three-link",
+  "description": "Phase 5, robotic arm: inverse kinematics of a redundant three-link arm (no closed-form solution); damped least squares from several starts is the numerical reference.",
+  "runs": 10,
+  "baseSeed": 1100,
+  "threads": 2,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "arm-ik",
+    "scene": "arm-three-link"
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (first, restarts)",
+      "params": {
+        "variant": "first"
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 50
+      }
+    },
+    {
+      "type": "particle-swarm",
+      "label": "Particle Swarm Optimisation"
+    },
+    {
+      "type": "nsga2",
+      "label": "NSGA-II",
+      "params": {
+        "populationSize": 50
+      }
+    }
+  ],
+  "reference": true
+}

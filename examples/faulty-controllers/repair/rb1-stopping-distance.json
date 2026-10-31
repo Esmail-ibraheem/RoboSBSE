@@ -1,0 +1,32 @@
+{
+  "schema": "robosbse.repair-subject/1",
+  "id": "rb1-stopping-distance",
+  "name": "RB1: Incorrect stopping-distance threshold",
+  "purpose": "program-repair",
+  "defectKind": "Incorrect stopping-distance threshold",
+  "defect": "The braking term of the speed limiter divides by 200 instead of 2 times the deceleration, so the controller believes it can stop in a hundredth of the real braking distance and drives into obstacles at speed.",
+  "className": "subjects.StoppingDistanceBug",
+  "source": "src/subjects/StoppingDistanceBug.java",
+  "scope": [],
+  "referenceFix": {
+    "find": "v * v / (200.0 * deceleration)",
+    "replace": "v * v / (2.0 * deceleration)"
+  },
+  "failureRecords": [
+    "../regressions/bug2-braking-collision.json",
+    "tests/rb1-collision-1.json",
+    "tests/rb1-collision-2.json",
+    "tests/rb1-collision-3.json",
+    "tests/rb1-collision-4.json",
+    "tests/rb1-collision-5.json",
+    "tests/rb1-collision-6.json"
+  ],
+  "heldOutRecords": [
+    "tests/rb1-collision-7.json",
+    "tests/rb1-collision-8.json",
+    "tests/rb1-collision-9.json",
+    "tests/rb1-collision-10.json",
+    "tests/rb1-collision-11.json",
+    "tests/rb1-collision-12.json"
+  ]
+}

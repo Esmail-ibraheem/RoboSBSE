@@ -1,0 +1,19 @@
+{
+  "schema": "robosbse.repair-subject/1",
+  "id": "rb4-boundary-check",
+  "name": "RB4: Missing boundary check",
+  "purpose": "program-repair",
+  "defectKind": "Missing boundary check",
+  "defect": "The speed clamp only triggers above 1.5 times the robot's maximum speed, so the low-battery boost (+25%) commands speeds the hardware cannot deliver.",
+  "className": "subjects.BoundaryCheckBug",
+  "source": "src/subjects/BoundaryCheckBug.java",
+  "scope": [],
+  "referenceFix": {
+    "find": "if (limit > robot.maxSpeed() * 1.5)",
+    "replace": "if (limit > robot.maxSpeed())"
+  },
+  "failureRecords": [
+    "../regressions/bug3-boost-velocity.json"
+  ],
+  "heldOutRecords": []
+}

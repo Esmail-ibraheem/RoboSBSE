@@ -1,0 +1,149 @@
+{
+  "schema" : "robosbse.failure/1",
+  "controller" : "reactive-bug1-dropout",
+  "controllerParams" : { },
+  "violated" : [ "collision" ],
+  "verdicts" : [ {
+    "property" : "collision",
+    "applicable" : true,
+    "violated" : true,
+    "robustness" : -0.09510748534364666,
+    "detail" : "min obstacle clearance -0.024 m"
+  }, {
+    "property" : "bounds",
+    "applicable" : true,
+    "violated" : false,
+    "robustness" : 1.0,
+    "detail" : "min border clearance 2.482 m"
+  }, {
+    "property" : "valid-command",
+    "applicable" : true,
+    "violated" : false,
+    "robustness" : 1.0,
+    "detail" : "all commands finite"
+  }, {
+    "property" : "velocity",
+    "applicable" : true,
+    "violated" : false,
+    "robustness" : 1.0,
+    "detail" : "max commanded speed 0.935 m/s (limit 1.000), 0 violating steps"
+  }, {
+    "property" : "completion",
+    "applicable" : true,
+    "violated" : false,
+    "robustness" : 1.0,
+    "detail" : "completion never reported"
+  } ],
+  "outcome" : "COLLISION",
+  "time" : 2.3000000000000003,
+  "scenario" : {
+    "start" : {
+      "x" : 8.627799129264558,
+      "y" : 2.734393949729891,
+      "theta" : -1.552826915717943
+    },
+    "goal" : {
+      "x" : 6.56562322464632,
+      "y" : 6.827869725629909
+    },
+    "sensorNoise" : 0.0,
+    "scanDropout" : 0.4436574947096273,
+    "battery" : 1.0,
+    "speedLimit" : 0.9391942118506946,
+    "freeDistance" : 0.5768047968659753,
+    "obstacles" : [ ]
+  },
+  "arena" : {
+    "schema" : "robosbse.map/1",
+    "name" : "testing-arena",
+    "description" : "12 x 12 m arena for search-based testing. Two fixed pillars; generated scenarios add start, goal, obstacles and conditions.",
+    "width" : 12.0,
+    "height" : 12.0,
+    "start" : {
+      "x" : 1.5,
+      "y" : 1.5,
+      "theta" : 0.0
+    },
+    "goal" : {
+      "x" : 10.5,
+      "y" : 10.5
+    },
+    "goalTolerance" : 0.3,
+    "obstacles" : [ {
+      "type" : "circle",
+      "x" : 4.0,
+      "y" : 8.0,
+      "r" : 0.5
+    }, {
+      "type" : "rect",
+      "x" : 7.5,
+      "y" : 3.5,
+      "w" : 1.0,
+      "h" : 1.0
+    } ]
+  },
+  "testing" : {
+    "controller" : "reactive-bug1-dropout",
+    "properties" : "safety",
+    "fitness" : "collision",
+    "obstacleSlots" : 4,
+    "maxSteps" : 1200,
+    "simulationSeed" : 1
+  },
+  "robot" : {
+    "radius" : 0.25,
+    "maxSpeed" : 1.0,
+    "maxReverseSpeed" : 0.0,
+    "maxAcceleration" : 1.0,
+    "maxTurnRate" : 2.0,
+    "maxAngularAcceleration" : 8.0,
+    "batteryCapacity" : 1500.0,
+    "idlePower" : 2.0,
+    "speedPower" : 10.0,
+    "turnPower" : 2.0,
+    "accelerationPower" : 4.0,
+    "sensorRays" : 24,
+    "sensorRange" : 4.0
+  },
+  "genome" : [ 8.627799129264558, 2.734393949729891, -1.552826915717943, 6.56562322464632, 6.827869725629909, 0.007642206894354343, 0.4436574947096273, 0.348528956469626, 0.9391942118506946, 0.5768047968659753, 4.264543212142986, 6.157320232825981, 0.6740990582425235, 0.2515557426316941, 0.3997570501749762, 10.33774916123357, 10.524037114654428, 0.42302249238521855, 1.0, 0.15243987222367228, 1.9918375910865493, 7.612612816793776, 0.3304516801953984, 0.03787215348742212, 0.5750235745925348, 6.790843928067912, 5.174433673851841, 0.3922394624345942, 0.1794393051451919, 0.21368313557121565 ],
+  "reference" : {
+    "controller" : "reactive",
+    "violated" : [ ],
+    "outcome" : "REACHED_GOAL"
+  },
+  "provenance" : {
+    "experiment" : "testing-bug1-ga",
+    "algorithm" : "genetic-algorithm",
+    "seed" : 7,
+    "evaluation" : 36,
+    "fitness" : -0.02590812790907826
+  },
+  "minimization" : {
+    "property" : "collision",
+    "simulations" : 5,
+    "steps" : [ "removed obstacle Circle[x=1.9918375910865493, y=7.612612816793776, r=0.3304516801953984]", "sensor noise set to 0", "battery set to full" ],
+    "originalObstacles" : 1,
+    "original" : {
+      "start" : {
+        "x" : 8.627799129264558,
+        "y" : 2.734393949729891,
+        "theta" : -1.552826915717943
+      },
+      "goal" : {
+        "x" : 6.56562322464632,
+        "y" : 6.827869725629909
+      },
+      "sensorNoise" : 0.007642206894354343,
+      "scanDropout" : 0.4436574947096273,
+      "battery" : 0.348528956469626,
+      "speedLimit" : 0.9391942118506946,
+      "freeDistance" : 0.5768047968659753,
+      "obstacles" : [ {
+        "type" : "circle",
+        "x" : 1.9918375910865493,
+        "y" : 7.612612816793776,
+        "r" : 0.3304516801953984
+      } ]
+    }
+  }
+}

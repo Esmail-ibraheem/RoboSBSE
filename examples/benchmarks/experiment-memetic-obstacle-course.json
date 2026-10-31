@@ -1,0 +1,64 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-memetic-obstacle-course",
+  "description": "Phase 3: does local refinement inside a GA help on the obstacle course? Equal budgets; every local-search evaluation is charged. Hill climbing and SA use the generic gene-step neighbourhood; 'smoothing' uses the navigation problem's route-smoothing neighbourhood.",
+  "runs": 15,
+  "baseSeed": 600,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4
+    }
+  },
+  "algorithms": [
+    {
+      "type": "genetic-algorithm",
+      "label": "GA",
+      "params": {
+        "populationSize": 40
+      }
+    },
+    {
+      "type": "memetic-algorithm",
+      "label": "MA, hill climbing",
+      "params": {
+        "populationSize": 40,
+        "localSearch": "hill-climbing"
+      }
+    },
+    {
+      "type": "memetic-algorithm",
+      "label": "MA, simulated annealing",
+      "params": {
+        "populationSize": 40,
+        "localSearch": "simulated-annealing"
+      }
+    },
+    {
+      "type": "memetic-algorithm",
+      "label": "MA, smoothing (Lamarckian)",
+      "params": {
+        "populationSize": 40,
+        "localSearch": "problem"
+      }
+    },
+    {
+      "type": "memetic-algorithm",
+      "label": "MA, smoothing (Baldwinian)",
+      "params": {
+        "populationSize": 40,
+        "localSearch": "problem",
+        "learning": "baldwinian"
+      }
+    }
+  ],
+  "options": {
+    "archiveSize": 0
+  },
+  "reference": true
+}

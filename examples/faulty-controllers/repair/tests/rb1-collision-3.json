@@ -1,0 +1,46 @@
+{
+  "schema" : "robosbse.failure/1",
+  "controller" : "subject-rb1-stopping-distance",
+  "violated" : [ "collision" ],
+  "outcome" : "COLLISION",
+  "time" : 7.4,
+  "scenario" : {
+    "start" : {
+      "x" : 2.3436665998664092,
+      "y" : 1.0138966650532968,
+      "theta" : 2.249315362441295
+    },
+    "goal" : {
+      "x" : 10.586089195515854,
+      "y" : 4.259457032838062
+    },
+    "sensorNoise" : 0.025204622216477107,
+    "scanDropout" : 0.17470288825515995,
+    "battery" : 0.8934479744114577,
+    "speedLimit" : 0.9393174967787875,
+    "freeDistance" : 0.4,
+    "obstacles" : [ {
+      "type" : "circle",
+      "x" : 7.995154587108498,
+      "y" : 2.106279131083033,
+      "r" : 0.5803709818948004
+    }, {
+      "type" : "rect",
+      "x" : 0.706493299115295,
+      "y" : 7.7465394735838204,
+      "w" : 0.7122889733254022,
+      "h" : 0.7122889733254022
+    }, {
+      "type" : "rect",
+      "x" : 5.263486904144341,
+      "y" : 3.6917430869663397,
+      "w" : 0.8343319650368011,
+      "h" : 0.8343319650368011
+    } ]
+  },
+  "provenance" : {
+    "tool" : "search-based failure discovery (GA, collision robustness)",
+    "seed" : 6,
+    "evaluation" : 1907
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "nav-maze-ga",
+  "description": "GA on the deceptive maze with 10 waypoints and the pure-pursuit controller. Hard: compare with the A* reference.",
+  "seed": 42,
+  "budget": {
+    "maxEvaluations": 6000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:maze",
+    "params": {
+      "waypoints": 10,
+      "controller": "pure-pursuit",
+      "objective": "time",
+      "maxSteps": 2400,
+      "repair": true
+    }
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 60,
+      "crossover": "one-point",
+      "mutationSigma": 0.08,
+      "elitism": 3
+    }
+  }
+}

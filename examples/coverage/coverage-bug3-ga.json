@@ -1,0 +1,30 @@
+{
+  "schema": "robosbse.coverage-campaign/1",
+  "name": "coverage-bug3-ga",
+  "description": "Coverage-guided test generation for the BUG-3 controller. The battery gene starts at 0.2, so the faulty low-battery branch is only reached when a scenario drains the battery during the episode.",
+  "seed": 1,
+  "budget": {
+    "maxEvaluations": 6000
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive-bug3-boost",
+      "properties": "safety",
+      "obstacleSlots": 4,
+      "maxSteps": 1200,
+      "minBattery": 0.2,
+      "simulationSeed": 1
+    }
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 30,
+      "mutationSigma": 0.1
+    }
+  },
+  "randomBaseline": true,
+  "threads": 4
+}

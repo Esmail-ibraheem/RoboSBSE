@@ -1,0 +1,17 @@
+{
+  "schema": "robosbse.repair-subject/1",
+  "id": "gi-reactive-baseline",
+  "name": "Reactive controller (correct baseline)",
+  "purpose": "genetic-improvement",
+  "className": "subjects.ReactiveBaseline",
+  "source": "src/subjects/ReactiveBaseline.java",
+  "scope": [
+    "HEADING_CANDIDATES",
+    "ARC_SAMPLES",
+    "step",
+    "corridorFree",
+    "safeSpeed",
+    "arcClear"
+  ],
+  "description": "Correct map-free reactive controller that counts its computational work. Genetic improvement may change operators, constants and conditions of the heading search and the speed limiter."
+}

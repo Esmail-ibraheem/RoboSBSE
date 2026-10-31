@@ -1,0 +1,51 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-G-arm-trajectory",
+  "description": "Phase 5, robotic arm: via-point trajectory from the home pose to a low target behind a post. The straight joint-space move collides; the configuration-space planner (A*) is the conventional reference.",
+  "runs": 10,
+  "baseSeed": 1200,
+  "threads": 2,
+  "budget": {
+    "maxEvaluations": 4000
+  },
+  "problem": {
+    "type": "arm-trajectory",
+    "scene": "arm-cluttered"
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (first, restarts)",
+      "params": {
+        "variant": "first"
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 50
+      }
+    },
+    {
+      "type": "particle-swarm",
+      "label": "Particle Swarm Optimisation"
+    },
+    {
+      "type": "nsga2",
+      "label": "NSGA-II",
+      "params": {
+        "populationSize": 50
+      }
+    }
+  ],
+  "reference": true
+}

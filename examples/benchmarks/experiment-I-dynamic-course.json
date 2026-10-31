@@ -1,0 +1,50 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-I-dynamic-course",
+  "description": "Phase 5, dynamic environment: route optimisation on the dynamic obstacle course (gap guards, cross traffic, a patrol cart, a pallet that appears for 25 s, a restricted area, gravel). Fitness comes from time-dependent simulation; A* plans on the static map only and is the reference.",
+  "runs": 10,
+  "baseSeed": 1500,
+  "threads": 2,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:dynamic-obstacle-course",
+    "params": {
+      "waypoints": 6,
+      "controller": "waypoint-follower",
+      "objective": "time",
+      "maxSteps": 2400
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (first, restarts)",
+      "params": {
+        "variant": "first"
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 50
+      }
+    },
+    {
+      "type": "particle-swarm",
+      "label": "Particle Swarm Optimisation"
+    }
+  ],
+  "reference": true
+}

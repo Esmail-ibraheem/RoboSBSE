@@ -1,0 +1,17 @@
+{
+  "schema": "robosbse.repair-subject/1",
+  "id": "rb2-comparison",
+  "name": "RB2: Wrong comparison operator",
+  "purpose": "program-repair",
+  "defectKind": "Wrong comparison operator",
+  "defect": "The completion check uses >= instead of <=, so the controller reports the task complete whenever it is far from the goal (immediately, in practice).",
+  "className": "subjects.ComparisonBug",
+  "source": "src/subjects/ComparisonBug.java",
+  "scope": [],
+  "referenceFix": {
+    "find": "Math.hypot(dx, dy) >= completionFactor",
+    "replace": "Math.hypot(dx, dy) <= completionFactor"
+  },
+  "failureRecords": [],
+  "heldOutRecords": []
+}

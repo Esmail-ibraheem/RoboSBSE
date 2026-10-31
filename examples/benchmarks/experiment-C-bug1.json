@@ -1,0 +1,54 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-C-failure-discovery-bug1",
+  "description": "Experiment C (Phase 1 subset): do search-based test generators discover controller failures more efficiently than random testing? Fitness = collision robustness; success = at least one failure found within the budget.",
+  "runs": 15,
+  "baseSeed": 200,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive-bug1-dropout",
+      "properties": "safety",
+      "fitness": "collision"
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Testing"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (stochastic)",
+      "params": {
+        "variant": "stochastic",
+        "stepSize": 0.08,
+        "maxFailures": 40
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing",
+      "params": {
+        "stepSize": 0.08
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Search",
+      "params": {
+        "populationSize": 50
+      }
+    }
+  ],
+  "options": {
+    "minimizeFailures": false,
+    "archiveSize": 0
+  },
+  "reference": false
+}

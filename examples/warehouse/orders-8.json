@@ -1,0 +1,133 @@
+{
+  "schema": "robosbse.tasks/1",
+  "map": "builtin:warehouse",
+  "depot": {
+    "x": 1.5,
+    "y": 1.5
+  },
+  "charger": {
+    "x": 1.0,
+    "y": 5.25
+  },
+  "capacity": 2,
+  "speed": 0.8,
+  "serviceTime": 4.0,
+  "chargeRate": 60.0,
+  "reserve": 0.1,
+  "name": "orders-8",
+  "description": "8 pickup-and-delivery orders on the warehouse map: capacity 2, deadlines, three dependency constraints (T4 after T1, T6 after T3, T8 after T2 and T5) and a 35% initial battery, so the robot must recharge.",
+  "initialBattery": 0.35,
+  "tasks": [
+    {
+      "id": "T1",
+      "pickup": {
+        "x": 4.5,
+        "y": 5.25
+      },
+      "delivery": {
+        "x": 6.5,
+        "y": 12.8
+      },
+      "deadline": 120,
+      "after": []
+    },
+    {
+      "id": "T2",
+      "pickup": {
+        "x": 14.0,
+        "y": 5.25
+      },
+      "delivery": {
+        "x": 23.0,
+        "y": 1.5
+      },
+      "deadline": 150,
+      "after": []
+    },
+    {
+      "id": "T3",
+      "pickup": {
+        "x": 18.5,
+        "y": 8.75
+      },
+      "delivery": {
+        "x": 6.5,
+        "y": 12.8
+      },
+      "deadline": 200,
+      "after": []
+    },
+    {
+      "id": "T4",
+      "pickup": {
+        "x": 9.5,
+        "y": 8.75
+      },
+      "delivery": {
+        "x": 1.0,
+        "y": 12.5
+      },
+      "deadline": 250,
+      "after": [
+        "T1"
+      ]
+    },
+    {
+      "id": "T5",
+      "pickup": {
+        "x": 16.0,
+        "y": 2.0
+      },
+      "delivery": {
+        "x": 23.0,
+        "y": 1.5
+      },
+      "deadline": 220,
+      "after": []
+    },
+    {
+      "id": "T6",
+      "pickup": {
+        "x": 19.5,
+        "y": 12.4
+      },
+      "delivery": {
+        "x": 1.0,
+        "y": 12.5
+      },
+      "deadline": 300,
+      "after": [
+        "T3"
+      ]
+    },
+    {
+      "id": "T7",
+      "pickup": {
+        "x": 6.0,
+        "y": 2.0
+      },
+      "delivery": {
+        "x": 6.5,
+        "y": 12.8
+      },
+      "deadline": 180,
+      "after": []
+    },
+    {
+      "id": "T8",
+      "pickup": {
+        "x": 12.0,
+        "y": 12.4
+      },
+      "delivery": {
+        "x": 23.0,
+        "y": 1.5
+      },
+      "deadline": 350,
+      "after": [
+        "T2",
+        "T5"
+      ]
+    }
+  ]
+}

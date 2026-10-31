@@ -1,0 +1,49 @@
+{
+  "schema": "robosbse.arm/1",
+  "width": 3.0,
+  "height": 2.0,
+  "base": {
+    "x": 1.5,
+    "y": 0.1
+  },
+  "links": [
+    0.9,
+    0.7
+  ],
+  "jointMin": [
+    0.0,
+    -2.8
+  ],
+  "jointMax": [
+    3.141592653589793,
+    2.8
+  ],
+  "linkRadius": 0.04,
+  "maxJointSpeed": 1.0,
+  "home": [
+    1.5707963267948966,
+    0.0
+  ],
+  "name": "arm-reach",
+  "description": "Two-link arm on a table, a target to the right and two small obstacles. The analytical IK has an exact answer.",
+  "obstacles": [
+    {
+      "type": "rect",
+      "x": 0.3,
+      "y": 1.2,
+      "w": 0.4,
+      "h": 0.3
+    },
+    {
+      "type": "circle",
+      "x": 2.5,
+      "y": 1.45,
+      "r": 0.15
+    }
+  ],
+  "target": {
+    "x": 2.2,
+    "y": 0.8
+  },
+  "tasks": []
+}

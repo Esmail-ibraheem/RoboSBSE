@@ -1,0 +1,51 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-C-bug3-whitebox",
+  "description": "Experiment C, BUG-3 with a rare trigger: the initial battery is at least 0.2, so the faulty low-battery branch (battery < 0.1) is only reached when a scenario drains the battery during the episode. Compares random testing, black-box robustness guidance and white-box guidance (approach level + branch distance to low-battery-boost:true, then robustness). Same budget; success = velocity failure found.",
+  "runs": 15,
+  "baseSeed": 500,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive-bug3-boost",
+      "properties": "safety",
+      "fitness": "min",
+      "minBattery": 0.2
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Testing"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "GA, robustness (black-box)",
+      "params": {
+        "populationSize": 30
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "GA, branch distance (white-box)",
+      "params": {
+        "populationSize": 30
+      },
+      "problemParams": {
+        "fitness": "branch:low-battery-boost:true"
+      }
+    }
+  ],
+  "options": {
+    "minimizeFailures": true,
+    "archiveSize": 0
+  },
+  "describeFailures": true,
+  "compareBy": "timeToTarget",
+  "reference": false
+}

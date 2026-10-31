@@ -1,0 +1,26 @@
+[package]
+name = "robosbse-ui"
+version = "0.1.0"
+edition = "2021"
+description = "Desktop laboratory UI for RoboSBSE (talks to the Java engine over JSON Lines)"
+rust-version = "1.95"
+license = "MIT"
+
+[[bin]]
+name = "robosbse"
+path = "src/main.rs"
+
+[dependencies]
+eframe = { version = "0.36.2", default-features = false, features = ["glow", "default_fonts", "x11", "wayland"] }
+egui_plot = "0.37.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rfd = "0.17.2"
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+[profile.release]
+opt-level = 3
+debug = false
+
+[profile.dev.package."*"]
+opt-level = 2

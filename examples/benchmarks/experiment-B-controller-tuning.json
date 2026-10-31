@@ -1,0 +1,65 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-B-controller-tuning",
+  "description": "Experiment B: which optimisation approach finds effective parameters for the map-free reactive controller across several environments? Fitness = mean over three training maps of travel time + 20 x collision risk; the testing arena is held out for validation; the untuned defaults are the reference.",
+  "runs": 15,
+  "baseSeed": 400,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 600
+  },
+  "problem": {
+    "type": "controller-tuning",
+    "params": {
+      "controller": "reactive",
+      "maps": "obstacle-course,warehouse,empty-field",
+      "validationMaps": "testing-arena",
+      "objective": "weighted",
+      "weightTime": 1.0,
+      "weightEnergy": 0.0,
+      "weightRisk": 20.0,
+      "aggregate": "mean"
+    }
+  },
+  "algorithms": [
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (stochastic)",
+      "params": {
+        "variant": "stochastic",
+        "stepSize": 0.05
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 20
+      }
+    },
+    {
+      "type": "particle-swarm",
+      "label": "PSO",
+      "params": {
+        "swarmSize": 20
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing",
+      "params": {
+        "stepSize": 0.05
+      }
+    },
+    {
+      "type": "evolution-strategy",
+      "label": "Evolution Strategy",
+      "params": {}
+    },
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    }
+  ],
+  "reference": true
+}

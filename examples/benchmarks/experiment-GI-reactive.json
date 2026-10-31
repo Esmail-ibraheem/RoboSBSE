@@ -1,0 +1,43 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-GI-reactive-controller",
+  "description": "Genetic improvement of the correct reactive controller: constrained source edits (operators, constants, conditions of the heading search and the speed limiter) that reduce travel time and counted work per control step while the controller keeps passing 20 correctness tests and completing every performance map. The best improvement of each run is validated on 40 held-out tests.",
+  "runs": 5,
+  "baseSeed": 1200,
+  "threads": 2,
+  "budget": {
+    "maxEvaluations": 300
+  },
+  "problem": {
+    "type": "genetic-improvement",
+    "params": {
+      "workers": 1
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random edits"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic improvement (GA, weighted)",
+      "params": {
+        "populationSize": 20,
+        "elitism": 2
+      }
+    },
+    {
+      "type": "nsga2",
+      "label": "Genetic improvement (NSGA-II)",
+      "params": {
+        "populationSize": 20
+      }
+    }
+  ],
+  "options": {
+    "archiveSize": 0,
+    "maxTargets": 20
+  },
+  "reference": true
+}

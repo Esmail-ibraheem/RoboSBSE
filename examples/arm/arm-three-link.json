@@ -1,0 +1,54 @@
+{
+  "schema": "robosbse.arm/1",
+  "name": "arm-three-link",
+  "description": "Redundant three-link arm reaching under an overhang; no closed-form IK, damped least squares is the numerical reference.",
+  "width": 3.0,
+  "height": 2.0,
+  "base": {
+    "x": 1.5,
+    "y": 0.1
+  },
+  "links": [
+    0.7,
+    0.55,
+    0.45
+  ],
+  "jointMin": [
+    0.0,
+    -2.6,
+    -2.6
+  ],
+  "jointMax": [
+    3.141592653589793,
+    2.6,
+    2.6
+  ],
+  "linkRadius": 0.04,
+  "maxJointSpeed": 1.0,
+  "home": [
+    1.5707963267948966,
+    0.0,
+    0.0
+  ],
+  "obstacles": [
+    {
+      "type": "rect",
+      "x": 1.85,
+      "y": 0.75,
+      "w": 0.9,
+      "h": 0.12
+    },
+    {
+      "type": "rect",
+      "x": 2.6,
+      "y": 0.1,
+      "w": 0.12,
+      "h": 0.5
+    }
+  ],
+  "target": {
+    "x": 2.35,
+    "y": 0.4
+  },
+  "tasks": []
+}

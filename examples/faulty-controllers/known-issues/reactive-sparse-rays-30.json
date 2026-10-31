@@ -1,0 +1,51 @@
+{
+  "schema": "robosbse.known-issue/1",
+  "controller": "reactive",
+  "issue": "The correct reactive controller collides: obstacle corners between the 24 range rays (15 degrees apart) are missing from its point-based safety checks.",
+  "evidence": "collides even with perfect sensing (no noise, no dropout); passes with 64 rays",
+  "violated": [
+    "collision"
+  ],
+  "scenario": {
+    "start": {
+      "x": 10.009662327689252,
+      "y": 4.351939176013478,
+      "theta": 1.6137816804010532
+    },
+    "goal": {
+      "x": 1.6170836862430147,
+      "y": 8.45973613900763
+    },
+    "sensorNoise": 0.00280937650936418,
+    "scanDropout": 0.2963209271481496,
+    "battery": 0.14277551840918998,
+    "speedLimit": 1.0,
+    "freeDistance": 0.7050764957294118,
+    "obstacles": [
+      {
+        "type": "rect",
+        "x": 7.111622498219944,
+        "y": 5.670249843766991,
+        "w": 1.315789164299189,
+        "h": 1.315789164299189
+      },
+      {
+        "type": "rect",
+        "x": 10.896930732117797,
+        "y": 2.043790776366971,
+        "w": 1.4739581955097671,
+        "h": 1.4739581955097671
+      },
+      {
+        "type": "circle",
+        "x": 7.149348681382071,
+        "y": 4.902252864956972,
+        "r": 0.3896917578881155
+      }
+    ]
+  },
+  "provenance": {
+    "found": "Phase 4, while generating failing tests for repair subject RB1 (GA, collision robustness)",
+    "seed": 30
+  }
+}

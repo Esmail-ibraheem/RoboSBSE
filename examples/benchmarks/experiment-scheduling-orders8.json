@@ -1,0 +1,68 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-scheduling-orders8",
+  "description": "Warehouse scheduling (Phase 2): priority-list search on 8 orders with capacity, dependencies, deadlines and charging; greedy dispatching is the reference.",
+  "runs": 15,
+  "baseSeed": 600,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 4000
+  },
+  "problem": {
+    "type": "warehouse-scheduling",
+    "params": {
+      "tasks": "builtin:orders-8",
+      "objective": "weighted",
+      "weightTardiness": 5
+    }
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing",
+      "params": {
+        "variant": "first",
+        "neighbourhood": "swap"
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing",
+      "params": {
+        "neighbourhood": "insert"
+      }
+    },
+    {
+      "type": "tabu-search",
+      "label": "Tabu Search (20 candidates)",
+      "params": {
+        "neighbourhood": "swap",
+        "tenure": 12,
+        "candidates": 20
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 40,
+        "crossover": "order",
+        "mutation": "inversion"
+      }
+    },
+    {
+      "type": "steady-state-ga",
+      "label": "Steady-State GA",
+      "params": {
+        "populationSize": 40,
+        "crossover": "order",
+        "mutation": "inversion"
+      }
+    }
+  ],
+  "reference": true
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-D-multiobjective",
+  "description": "Experiment D: how does optimising travel time, energy and collision risk jointly change the result? Weighted-sum GA vs NSGA-II, compared by the normalised hypervolume of each run's archive of non-dominated feasible routes (reference point: 60 s, 800 J, risk 1).",
+  "runs": 15,
+  "baseSeed": 500,
+  "threads": 8,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4,
+      "objective": "weighted",
+      "weightTime": 1.0,
+      "weightEnergy": 0.1,
+      "weightRisk": 20.0,
+      "referenceTime": 60.0,
+      "referenceEnergy": 800.0
+    }
+  },
+  "algorithms": [
+    {
+      "type": "genetic-algorithm",
+      "label": "Weighted-sum GA",
+      "params": {
+        "populationSize": 40
+      }
+    },
+    {
+      "type": "nsga2",
+      "label": "NSGA-II",
+      "params": {
+        "populationSize": 40
+      }
+    },
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    }
+  ],
+  "reference": true,
+  "compareBy": "hypervolume",
+  "options": {
+    "archiveSize": 0
+  }
+}

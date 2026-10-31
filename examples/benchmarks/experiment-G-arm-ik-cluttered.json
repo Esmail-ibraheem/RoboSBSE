@@ -1,0 +1,51 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-G-arm-ik-cluttered",
+  "description": "Phase 5, robotic arm: inverse kinematics of the two-link arm among obstacles. Which algorithm finds a reaching, collision-free, within-limits configuration under a fixed budget? Analytical IK (both elbows) and damped least squares are the references.",
+  "runs": 10,
+  "baseSeed": 1000,
+  "threads": 2,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "arm-ik",
+    "scene": "arm-cluttered"
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (first, restarts)",
+      "params": {
+        "variant": "first"
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 50
+      }
+    },
+    {
+      "type": "particle-swarm",
+      "label": "Particle Swarm Optimisation"
+    },
+    {
+      "type": "nsga2",
+      "label": "NSGA-II",
+      "params": {
+        "populationSize": 50
+      }
+    }
+  ],
+  "reference": true
+}

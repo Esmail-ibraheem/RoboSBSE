@@ -1,0 +1,70 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-parallel-speedup",
+  "description": "Phase 3: wall-clock speed-up of parallel fitness evaluation. The same GA (population 40) tunes the reactive controller with 1, 2, 4 and 8 evaluation threads; runs execute one after another (benchmark threads = 1) so timings do not compete. Results must be identical across thread counts; only the time may differ.",
+  "runs": 5,
+  "baseSeed": 900,
+  "threads": 1,
+  "budget": {
+    "maxEvaluations": 400
+  },
+  "problem": {
+    "type": "controller-tuning",
+    "params": {
+      "controller": "reactive",
+      "maps": "obstacle-course,warehouse,empty-field",
+      "validationMaps": "testing-arena",
+      "objective": "weighted",
+      "weightTime": 1.0,
+      "weightEnergy": 0.0,
+      "weightRisk": 20.0,
+      "aggregate": "mean"
+    }
+  },
+  "algorithms": [
+    {
+      "type": "genetic-algorithm",
+      "label": "GA, 1 thread",
+      "params": {
+        "populationSize": 40
+      },
+      "options": {
+        "threads": 1
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "GA, 2 threads",
+      "params": {
+        "populationSize": 40
+      },
+      "options": {
+        "threads": 2
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "GA, 4 threads",
+      "params": {
+        "populationSize": 40
+      },
+      "options": {
+        "threads": 4
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "GA, 8 threads",
+      "params": {
+        "populationSize": 40
+      },
+      "options": {
+        "threads": 8
+      }
+    }
+  ],
+  "options": {
+    "archiveSize": 0
+  },
+  "reference": false
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "testing-bug3-random",
+  "description": "Random testing for BUG-3 (unclamped low-battery speed boost). The velocity property has a fitness plateau, so random search is a strong baseline here.",
+  "seed": 5,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive-bug3-boost",
+      "properties": "safety",
+      "fitness": "min",
+      "obstacleSlots": 4,
+      "maxSteps": 1200,
+      "simulationSeed": 1
+    }
+  },
+  "algorithm": {
+    "type": "random-search",
+    "params": {}
+  },
+  "options": {
+    "minimizeFailures": true,
+    "maxFailureRecords": 5
+  }
+}

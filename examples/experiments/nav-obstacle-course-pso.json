@@ -1,0 +1,22 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "nav-obstacle-course-pso",
+  "description": "PSO on route waypoints (continuous coordinates, so PSO applies directly).",
+  "seed": 42,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4
+    }
+  },
+  "algorithm": {
+    "type": "particle-swarm",
+    "params": {
+      "swarmSize": 30
+    }
+  }
+}

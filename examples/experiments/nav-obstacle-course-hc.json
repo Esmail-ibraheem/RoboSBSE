@@ -1,0 +1,28 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "nav-obstacle-course-hc",
+  "description": "Random-restart first-improvement hill climbing on the obstacle course.",
+  "seed": 42,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4,
+      "controller": "waypoint-follower",
+      "objective": "time",
+      "maxSteps": 2400,
+      "repair": true
+    }
+  },
+  "algorithm": {
+    "type": "hill-climbing",
+    "params": {
+      "variant": "first",
+      "stepSize": 0.03,
+      "restarts": true
+    }
+  }
+}

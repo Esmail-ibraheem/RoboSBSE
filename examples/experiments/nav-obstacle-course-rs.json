@@ -1,0 +1,24 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "nav-obstacle-course-rs",
+  "description": "Random search baseline on the obstacle course.",
+  "seed": 42,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4,
+      "controller": "waypoint-follower",
+      "objective": "time",
+      "maxSteps": 2400,
+      "repair": true
+    }
+  },
+  "algorithm": {
+    "type": "random-search",
+    "params": {}
+  }
+}

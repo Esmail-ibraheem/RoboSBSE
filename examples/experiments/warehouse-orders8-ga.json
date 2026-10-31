@@ -1,0 +1,25 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "warehouse-orders8-ga",
+  "description": "Schedule 8 pickup-and-delivery orders (capacity 2, dependencies, deadlines, charging) with a GA on priority lists (order crossover, inversion mutation).",
+  "seed": 1,
+  "budget": {
+    "maxEvaluations": 4000
+  },
+  "problem": {
+    "type": "warehouse-scheduling",
+    "params": {
+      "tasks": "builtin:orders-8",
+      "objective": "weighted",
+      "weightTardiness": 5
+    }
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 40,
+      "crossover": "order",
+      "mutation": "inversion"
+    }
+  }
+}

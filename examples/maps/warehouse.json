@@ -1,0 +1,22 @@
+{
+  "schema": "robosbse.map/1",
+  "name": "warehouse",
+  "description": "24 x 16 m warehouse floor: three rows of shelving with 2.5 m aisles, a cross aisle and a packing station.",
+  "width": 24,
+  "height": 16,
+  "start": { "x": 1.5, "y": 1.5, "theta": 0.0 },
+  "goal": { "x": 22.5, "y": 14.5 },
+  "goalTolerance": 0.3,
+  "obstacles": [
+    { "type": "rect", "x": 3.0, "y": 3.0, "w": 7.5, "h": 1.0 },
+    { "type": "rect", "x": 13.0, "y": 3.0, "w": 8.0, "h": 1.0 },
+    { "type": "rect", "x": 3.0, "y": 6.5, "w": 7.5, "h": 1.0 },
+    { "type": "rect", "x": 13.0, "y": 6.5, "w": 8.0, "h": 1.0 },
+    { "type": "rect", "x": 3.0, "y": 10.0, "w": 7.5, "h": 1.0 },
+    { "type": "rect", "x": 13.0, "y": 10.0, "w": 8.0, "h": 1.0 },
+    { "type": "rect", "x": 22.0, "y": 5.0, "w": 2.0, "h": 4.0 },
+    { "type": "rect", "x": 5.0, "y": 13.5, "w": 3.0, "h": 2.5 },
+    { "type": "circle", "x": 11.75, "y": 8.75, "r": 0.4 },
+    { "type": "circle", "x": 16.0, "y": 13.2, "r": 0.5 }
+  ]
+}

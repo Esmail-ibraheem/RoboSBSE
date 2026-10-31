@@ -1,0 +1,27 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "tuning-pid-es",
+  "description": "Same tuning task with a (5/2,35) evolution strategy and self-adaptive step sizes.",
+  "seed": 3,
+  "budget": {
+    "maxEvaluations": 1000
+  },
+  "problem": {
+    "type": "controller-tuning",
+    "params": {
+      "controller": "pid-heading",
+      "maps": "obstacle-course,warehouse,empty-field",
+      "validationMaps": "maze",
+      "objective": "time",
+      "aggregate": "mean"
+    }
+  },
+  "algorithm": {
+    "type": "evolution-strategy",
+    "params": {
+      "mu": 5,
+      "lambda": 35,
+      "rho": 2
+    }
+  }
+}

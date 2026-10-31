@@ -1,0 +1,28 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "nav-obstacle-course-weighted-ga",
+  "description": "Weighted-sum GA on the same task: time + 0.1 * energy + 20 * risk collapsed into one score.",
+  "seed": 3,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4,
+      "objective": "weighted",
+      "weightTime": 1.0,
+      "weightEnergy": 0.1,
+      "weightRisk": 20.0,
+      "referenceTime": 60.0,
+      "referenceEnergy": 800.0
+    }
+  },
+  "algorithm": {
+    "type": "genetic-algorithm",
+    "params": {
+      "populationSize": 40
+    }
+  }
+}

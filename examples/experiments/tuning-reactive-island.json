@@ -1,0 +1,33 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "tuning-reactive-island",
+  "description": "Island-model GA (4 islands of 10, ring migration every 5 generations) tuning the reactive controller; offspring of all islands are evaluated as one parallel batch.",
+  "seed": 3,
+  "budget": {
+    "maxEvaluations": 400
+  },
+  "problem": {
+    "type": "controller-tuning",
+    "params": {
+      "controller": "reactive",
+      "maps": "obstacle-course,warehouse,empty-field",
+      "validationMaps": "testing-arena",
+      "objective": "weighted",
+      "weightTime": 1.0,
+      "weightEnergy": 0.0,
+      "weightRisk": 20.0
+    }
+  },
+  "algorithm": {
+    "type": "island-ga",
+    "params": {
+      "islands": 4,
+      "islandSize": 10,
+      "migrationInterval": 5,
+      "elitism": 1
+    }
+  },
+  "options": {
+    "threads": 4
+  }
+}

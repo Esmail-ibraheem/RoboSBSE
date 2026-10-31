@@ -1,0 +1,17 @@
+{
+  "schema": "robosbse.repair-subject/1",
+  "id": "rb3-turn-direction",
+  "name": "RB3: Incorrect turn direction",
+  "purpose": "program-repair",
+  "defectKind": "Incorrect turn direction",
+  "defect": "The steering sign constant is -1, so the controller turns away from the heading it selected.",
+  "className": "subjects.TurnDirectionBug",
+  "source": "src/subjects/TurnDirectionBug.java",
+  "scope": [],
+  "referenceFix": {
+    "find": "STEERING_SIGN = -1.0",
+    "replace": "STEERING_SIGN = 1.0"
+  },
+  "failureRecords": [],
+  "heldOutRecords": []
+}

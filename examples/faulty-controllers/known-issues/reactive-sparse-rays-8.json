@@ -1,0 +1,44 @@
+{
+  "schema": "robosbse.known-issue/1",
+  "controller": "reactive",
+  "issue": "The correct reactive controller collides: obstacle corners between the 24 range rays (15 degrees apart) are missing from its point-based safety checks.",
+  "evidence": "collides only with scan dropout (no dropout: min clearance 0.088 m)",
+  "violated": [
+    "collision"
+  ],
+  "scenario": {
+    "start": {
+      "x": 10.088983250985978,
+      "y": 2.098376953255829,
+      "theta": -3.067243724307039
+    },
+    "goal": {
+      "x": 1.2840416683205782,
+      "y": 0.5016306032315336
+    },
+    "sensorNoise": 0.02291603245194622,
+    "scanDropout": 0.3823261091671617,
+    "battery": 0.5595675171824388,
+    "speedLimit": 1.0,
+    "freeDistance": 1.5,
+    "obstacles": [
+      {
+        "type": "rect",
+        "x": 6.11238038426244,
+        "y": 1.3243305088897812,
+        "w": 0.527008156312241,
+        "h": 0.527008156312241
+      },
+      {
+        "type": "circle",
+        "x": 11.311587559552924,
+        "y": 9.161268854541351,
+        "r": 0.21107685178085178
+      }
+    ]
+  },
+  "provenance": {
+    "found": "Phase 4, while generating failing tests for repair subject RB1 (GA, collision robustness)",
+    "seed": 8
+  }
+}

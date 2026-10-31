@@ -1,0 +1,63 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  engine:
+    name: Java engine (JUnit)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/java-engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+      - name: Test and build the engine jar
+        run: ./gradlew test engineJar --no-daemon
+      - name: Smoke-test the headless CLI
+        run: |
+          java -jar build/libs/robosbse-engine.jar version
+          java -jar build/libs/robosbse-engine.jar reproduce ../../examples/faulty-controllers/regressions/bug1-dropout-collision.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: robosbse-engine
+          path: backend/java-engine/build/libs/robosbse-engine.jar
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: junit-reports
+          path: backend/java-engine/build/reports/tests
+
+  ui:
+    name: Rust UI (cargo test, incl. end-to-end engine test)
+    needs: engine
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/rust-ui
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: actions/download-artifact@v4
+        with:
+          name: robosbse-engine
+          path: backend/java-engine/build/libs
+      - name: System libraries for eframe
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libgl1-mesa-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libwayland-dev
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: frontend/rust-ui
+      - name: Build
+        run: cargo build --locked
+      - name: Test
+        run: cargo test --locked

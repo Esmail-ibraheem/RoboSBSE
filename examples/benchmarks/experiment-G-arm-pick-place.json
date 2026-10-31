@@ -1,0 +1,44 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-G-arm-pick-place",
+  "description": "Phase 5, robotic arm: order and elbow configurations for four pick-and-place jobs (random keys). Greedy planning and exhaustive enumeration (the exact optimum of the model) are the references.",
+  "runs": 10,
+  "baseSeed": 1300,
+  "threads": 2,
+  "budget": {
+    "maxEvaluations": 1500
+  },
+  "problem": {
+    "type": "arm-pick-place",
+    "scene": "arm-pick-place"
+  },
+  "algorithms": [
+    {
+      "type": "random-search",
+      "label": "Random Search"
+    },
+    {
+      "type": "hill-climbing",
+      "label": "Hill Climbing (first, restarts)",
+      "params": {
+        "variant": "first"
+      }
+    },
+    {
+      "type": "simulated-annealing",
+      "label": "Simulated Annealing"
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "Genetic Algorithm",
+      "params": {
+        "populationSize": 50
+      }
+    },
+    {
+      "type": "particle-swarm",
+      "label": "Particle Swarm Optimisation"
+    }
+  ],
+  "reference": true
+}

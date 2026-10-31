@@ -1,0 +1,28 @@
+{
+  "schema": "robosbse.experiment/1",
+  "name": "nav-obstacle-course-memetic",
+  "description": "Memetic algorithm: GA offspring refined by route smoothing (the navigation problem's own neighbourhood), Lamarckian learning. Local evaluations are charged to the budget.",
+  "seed": 42,
+  "budget": {
+    "maxEvaluations": 3000
+  },
+  "problem": {
+    "type": "navigation",
+    "map": "builtin:obstacle-course",
+    "params": {
+      "waypoints": 4
+    }
+  },
+  "algorithm": {
+    "type": "memetic-algorithm",
+    "params": {
+      "populationSize": 40,
+      "localSearch": "problem",
+      "localRate": 0.1,
+      "localBudget": 20
+    }
+  },
+  "options": {
+    "threads": 4
+  }
+}
