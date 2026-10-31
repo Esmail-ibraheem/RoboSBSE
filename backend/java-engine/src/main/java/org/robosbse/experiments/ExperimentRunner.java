@@ -34,7 +34,7 @@ import org.robosbse.protocol.Json;
  */
 public final class ExperimentRunner {
 
-    public static final String ENGINE_VERSION = "0.1.0";
+    public static final String ENGINE_VERSION = "1.0.0";
     public static final String RESULT_SCHEMA = "robosbse.result/1";
     private static final DateTimeFormatter STAMP = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").withZone(ZoneOffset.UTC);
 
@@ -242,7 +242,9 @@ public final class ExperimentRunner {
         }
         Csv.write(dir.resolve("convergence.csv"), lines);
         for (int i = 0; i < failures.size(); i++) {
-            String item = targetsField.endsWith("s") ? targetsField.substring(0, targetsField.length() - 1) : targetsField;
+            // Singular of the field name for the file name: failures -> failure, patches -> patch.
+            String item = targetsField.endsWith("ches") ? targetsField.substring(0, targetsField.length() - 2)
+                    : targetsField.endsWith("s") ? targetsField.substring(0, targetsField.length() - 1) : targetsField;
             Json.write(dir.resolve(targetsField).resolve(item + "-" + (i + 1) + ".json"), failures.get(i));
         }
         return dir;

@@ -1,0 +1,88 @@
+name: release
+
+# Portable downloads for Windows, Linux and macOS: the desktop app, the engine and a bundled Java runtime
+# (scripts/package/package.py). A pushed tag v* publishes them as a GitHub release; "Run workflow" builds
+# them as artifacts only.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version used in the download names"
+        default: "1.0.0"
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    name: Portable download (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-x64
+            os: windows-latest
+          - name: linux-x64
+            os: ubuntu-22.04
+          - name: macos-arm64
+            os: macos-14
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: frontend/rust-ui
+      - name: System libraries for eframe
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev libgl1-mesa-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libwayland-dev
+      - name: Version
+        shell: bash
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then v="${GITHUB_REF_NAME#v}"; else v="${{ inputs.version }}"; fi
+          echo "VERSION=$v" >> "$GITHUB_ENV"
+      - name: Build, package and smoke-test
+        shell: bash
+        env:
+          # No Visual C++ runtime needed on users' machines.
+          RUSTFLAGS: ${{ runner.os == 'Windows' && '-C target-feature=+crt-static' || '' }}
+        run: python scripts/package/package.py --jdk "$JAVA_HOME" --version "$VERSION" --out dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RoboSBSE-${{ matrix.name }}
+          path: |
+            dist/*.zip
+            dist/*.tar.gz
+          if-no-files-found: error
+
+  publish:
+    name: Publish the release
+    needs: package
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          body: |
+            Portable downloads: unzip and start the app. Java is bundled; nothing to install.
+
+            - **Windows** (`windows-x64.zip`): double-click `robosbse.exe`. If Windows shows "Windows protected your PC", click "More info", then "Run anyway" (the program is not code-signed).
+            - **macOS, Apple Silicon** (`macos-arm64.zip`): double-click `RoboSBSE.app`. The first time, right-click it and choose "Open" (not signed by an identified developer). If macOS says the app is damaged, run `xattr -dr com.apple.quarantine RoboSBSE.app` once.
+            - **Linux** (`linux-x64.tar.gz`): unpack and run `./robosbse` (needs OpenGL and X11 or Wayland).
+
+            Each download contains `START-HERE.txt` with the same instructions.

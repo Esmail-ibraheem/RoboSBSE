@@ -105,7 +105,26 @@ Details, commands and interpretation: [Phase 1](docs/experiments/phase1-results.
 [Phase 2](docs/experiments/phase2-results.md), [Phase 3](docs/experiments/phase3-results.md),
 [Phase 4](docs/experiments/phase4-results.md) and [Phase 5 results](docs/experiments/phase5-results.md).
 
-## Quick start
+## Download and run (no installation)
+
+Download the file for your system from the repository's **Releases** page, unpack it and start the app.
+Java is bundled, so nothing else needs to be installed.
+
+| System | Download | Start |
+|---|---|---|
+| Windows 10/11 (64-bit) | `RoboSBSE-<version>-windows-x64.zip` | double-click `robosbse.exe` |
+| macOS (Apple Silicon) | `RoboSBSE-<version>-macos-arm64.zip` | double-click `RoboSBSE.app` |
+| Linux (64-bit) | `RoboSBSE-<version>-linux-x64.tar.gz` | run `./robosbse` |
+
+The programs are not code-signed. On Windows, "Windows protected your PC" may appear: click *More info*,
+then *Run anyway*. On macOS, right-click `RoboSBSE.app` and choose *Open* the first time; if macOS calls the
+app damaged, run `xattr -dr com.apple.quarantine RoboSBSE.app` once. Each download contains `START-HERE.txt`.
+Results are saved in the `experiments` folder next to the app (on macOS in `~/RoboSBSE`).
+
+The downloads are built by `scripts/package/package.py` (app, engine, a Java runtime made with `jlink`, the
+examples) and published by `.github/workflows/release.yml` when a tag `v*` is pushed.
+
+## Build from source
 
 Requirements: **JDK 21+**, **Rust stable** (1.95+, required by egui 0.36), and any GPU or driver with OpenGL 2+ (integrated graphics are fine).
 Nothing else is downloaded except Gradle and Maven dependencies on the first build.

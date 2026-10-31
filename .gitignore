@@ -19,3 +19,4 @@ robosbse-ui.json
 .idea/
 .vscode/
 experiments/reactive-rerun/
+dist/

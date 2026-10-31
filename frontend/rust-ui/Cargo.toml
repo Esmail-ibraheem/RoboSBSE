@@ -1,6 +1,6 @@
 [package]
 name = "robosbse-ui"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 description = "Desktop laboratory UI for RoboSBSE (talks to the Java engine over JSON Lines)"
 rust-version = "1.95"
@@ -21,6 +21,7 @@ image = { version = "0.25", default-features = false, features = ["png"] }
 [profile.release]
 opt-level = 3
 debug = false
+strip = true
 
 [profile.dev.package."*"]
 opt-level = 2
