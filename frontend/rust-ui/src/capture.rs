@@ -1,8 +1,10 @@
 //! Command-line options and the scripted capture mode used for documentation screenshots and
 //! smoke tests: `robosbse --page lab --demo lab --capture shot.png` waits for the engine, runs a
-//! real experiment, positions the replay, saves a PNG of the window and exits.
+//! real experiment, positions the replay, saves a PNG of the window and exits. With
+//! `--record <dir>` it instead saves numbered frames: a time lapse of the running search, then the
+//! replay stepped frame by frame (or the finished page held still), for the demo video.
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
 use eframe::egui;
@@ -15,6 +17,8 @@ pub struct CliArgs {
     pub capture: Option<PathBuf>,
     pub page: Option<String>,
     pub demo: Option<String>,
+    /// Folder for the frames of a recording (`--record`).
+    pub record: Option<PathBuf>,
 }
 
 impl CliArgs {
@@ -26,11 +30,12 @@ impl CliArgs {
                 "--capture" => out.capture = it.next().map(PathBuf::from),
                 "--page" => out.page = it.next(),
                 "--demo" => out.demo = it.next(),
+                "--record" => out.record = it.next().map(PathBuf::from),
                 "--help" | "-h" => {
                     println!(
                         "robosbse [--page dashboard|lab|editor|algorithms|testing|benchmark|history|settings]\n\
                          \x20        [--demo lab|astar|testing|benchmark|tuning|warehouse|pareto|novelty|coverage|gp|repair|improve|\n\
-                         \x20               arm|arm-ik|arm-trajectory|fleet|dynamic] [--capture out.png]"
+                         \x20               arm|arm-ik|arm-trajectory|fleet|dynamic] [--capture out.png | --record frames-dir]"
                     );
                     std::process::exit(0);
                 }
@@ -49,20 +54,91 @@ enum Phase {
     Settle(u32),
     Shoot,
     WaitShot,
+    /// Recording: frame k of the replay sweep (or of the still page).
+    Record(u32),
     Done,
 }
 
+/// Frames of a recording: at most this many of the running search (one every third UI frame),
+/// then the replay swept in `REPLAY_FRAMES`, or the finished page held for `STILL_FRAMES`.
+const RUN_FRAMES: u32 = 30;
+const REPLAY_FRAMES: u32 = 90;
+const STILL_FRAMES: u32 = 45;
+/// Width of recorded frames (pixels).
+const FRAME_WIDTH: u32 = 1280;
+
 pub struct Script {
-    out: PathBuf,
+    out: Option<PathBuf>,
+    record: Option<PathBuf>,
     page: Page,
     demo: Option<String>,
     phase: Phase,
     started: Instant,
+    /// Recording state: frames saved, UI frames seen, and whether a screenshot is outstanding.
+    frames: u32,
+    run_frames: u32,
+    ticks: u64,
+    pending: Option<Instant>,
 }
 
 impl Script {
-    pub fn new(out: PathBuf, page: Page, demo: Option<String>) -> Script {
-        Script { out, page, demo, phase: Phase::WaitEngine, started: Instant::now() }
+    pub fn new(out: Option<PathBuf>, record: Option<PathBuf>, page: Page, demo: Option<String>) -> Script {
+        Script {
+            out,
+            record,
+            page,
+            demo,
+            phase: Phase::WaitEngine,
+            started: Instant::now(),
+            frames: 0,
+            run_frames: 0,
+            ticks: 0,
+            pending: None,
+        }
+    }
+}
+
+/// Saves a screenshot as frame `n`, scaled to `FRAME_WIDTH` (even height, as video encoders need).
+fn save_frame(dir: &Path, n: u32, image: &egui::ColorImage) {
+    let [w, h] = image.size;
+    let mut rgba = Vec::with_capacity(image.pixels.len() * 4);
+    for p in &image.pixels {
+        rgba.extend_from_slice(&p.to_srgba_unmultiplied());
+    }
+    let Some(full) = image::RgbaImage::from_raw(w as u32, h as u32, rgba) else { return };
+    let height = ((h as u32 * FRAME_WIDTH / w.max(1) as u32) / 2) * 2;
+    let small = image::imageops::resize(&full, FRAME_WIDTH, height, image::imageops::FilterType::Triangle);
+    if let Err(e) = small.save(dir.join(format!("f{n:05}.png"))) {
+        eprintln!("frame {n}: {e}");
+    }
+}
+
+/// Puts every replay shown on the current page at fraction `f` of its duration; false if there is none.
+fn position_replay(app: &mut RoboApp, page: Page, f: f64) -> bool {
+    match page {
+        Page::Arm => match &app.arm.motion {
+            Some(m) if m.duration() > 0.0 => {
+                app.arm.time = m.duration() * f;
+                app.arm.playing = false;
+                true
+            }
+            _ => false,
+        },
+        Page::Lab | Page::Testing | Page::GeneticProgramming => {
+            let replay = match page {
+                Page::Lab => &mut app.lab.replay,
+                Page::Testing => &mut app.testing.replay,
+                _ => &mut app.gp.replay,
+            };
+            if replay.trajectory.is_some() && replay.duration() > 0.0 {
+                replay.time = replay.duration() * f;
+                replay.playing = false;
+                true
+            } else {
+                false
+            }
+        }
+        _ => false,
     }
 }
 
@@ -87,9 +163,39 @@ pub fn step(app: &mut RoboApp, ctx: &egui::Context) {
     let Some(mut script) = app.capture.take() else { return };
     let timeout = script.started.elapsed() > Duration::from_secs(240);
     let demo = script.demo.clone().unwrap_or_default();
+    script.ticks += 1;
+    // Recording: save an arrived screenshot; wait (at most 5 s) while one is outstanding.
+    if let (Some(dir), Some(asked)) = (script.record.clone(), script.pending) {
+        let image = ctx.input(|i| {
+            i.raw.events.iter().find_map(|e| match e {
+                egui::Event::Screenshot { image, .. } => Some(image.clone()),
+                _ => None,
+            })
+        });
+        match image {
+            Some(image) => {
+                save_frame(&dir, script.frames, &image);
+                script.frames += 1;
+                script.pending = None;
+            }
+            None if asked.elapsed() < Duration::from_secs(5) => {
+                ctx.request_repaint();
+                app.capture = Some(script);
+                return;
+            }
+            None => script.pending = None,
+        }
+    }
+    let shoot = |script: &mut Script, ctx: &egui::Context| {
+        ctx.send_viewport_cmd(egui::ViewportCommand::Screenshot(egui::UserData::default()));
+        script.pending = Some(Instant::now());
+    };
     script.phase = match script.phase {
         Phase::WaitEngine if app.caps.is_some() => {
             app.page = script.page;
+            if let Some(dir) = &script.record {
+                let _ = std::fs::create_dir_all(dir);
+            }
             Phase::Act
         }
         Phase::WaitEngine if timeout => Phase::Shoot,
@@ -157,7 +263,7 @@ pub fn step(app: &mut RoboApp, ctx: &egui::Context) {
                         app.repair.algorithm = "nsga2".into();
                     } else {
                         app.repair.problems.entry(crate::pages::repair::REPAIR.into()).or_default()
-                            .insert("subject".into(), json!("rb2-comparison"));
+                            .insert("subject".into(), json!("rb1-stopping-distance"));
                     }
                     app.repair.budget = 200;
                     app.repair.threads = 2;
@@ -272,8 +378,27 @@ pub fn step(app: &mut RoboApp, ctx: &egui::Context) {
             }
             Phase::Settle(0)
         }
+        Phase::WaitResult if script.record.is_some() && script.run_frames < RUN_FRAMES && script.ticks % 3 == 0 => {
+            shoot(&mut script, ctx);
+            script.run_frames += 1;
+            Phase::WaitResult
+        }
+        Phase::Settle(n) if n >= 30 && script.record.is_some() => Phase::Record(0),
         Phase::Settle(n) if n >= 30 => Phase::Shoot,
         Phase::Settle(n) => Phase::Settle(n + 1),
+        Phase::Record(k) => {
+            let page = app.page;
+            let total = if position_replay(app, page, 0.0) { REPLAY_FRAMES } else { STILL_FRAMES };
+            if k >= total {
+                println!("recorded {} frames", script.frames);
+                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+                Phase::Done
+            } else {
+                position_replay(app, page, k as f64 / (total - 1) as f64);
+                shoot(&mut script, ctx);
+                Phase::Record(k + 1)
+            }
+        }
         Phase::Shoot => {
             ctx.send_viewport_cmd(egui::ViewportCommand::Screenshot(egui::UserData::default()));
             Phase::WaitShot
@@ -292,8 +417,9 @@ pub fn step(app: &mut RoboApp, ctx: &egui::Context) {
                         rgba.extend_from_slice(&p.to_srgba_unmultiplied());
                     }
                     let [w, h] = image.size;
-                    match image::save_buffer(&script.out, &rgba, w as u32, h as u32, image::ColorType::Rgba8) {
-                        Ok(_) => println!("captured {}", script.out.display()),
+                    let out = script.out.clone().unwrap_or_else(|| PathBuf::from("capture.png"));
+                    match image::save_buffer(&out, &rgba, w as u32, h as u32, image::ColorType::Rgba8) {
+                        Ok(_) => println!("captured {}", out.display()),
                         Err(e) => eprintln!("capture failed: {e}"),
                     }
                     ctx.send_viewport_cmd(egui::ViewportCommand::Close);
@@ -318,11 +444,12 @@ mod tests {
 
     #[test]
     fn parses_capture_options() {
-        let args = ["--page", "lab", "--demo", "lab", "--capture", "x.png"].iter().map(|s| s.to_string());
+        let args = ["--page", "lab", "--demo", "lab", "--capture", "x.png", "--record", "frames"].iter().map(|s| s.to_string());
         let parsed = CliArgs::parse(args);
         assert_eq!(parsed.page.as_deref(), Some("lab"));
         assert_eq!(parsed.demo.as_deref(), Some("lab"));
         assert_eq!(parsed.capture, Some(PathBuf::from("x.png")));
+        assert_eq!(parsed.record, Some(PathBuf::from("frames")));
         assert_eq!(CliArgs::parse(std::iter::empty()), CliArgs::default());
     }
 }

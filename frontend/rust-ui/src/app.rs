@@ -134,7 +134,8 @@ impl RoboApp {
         let lab_map = load_map_file(&maps_dir.join("warehouse.json")).unwrap_or_else(|| WorldMap::empty("untitled", 20.0, 20.0));
         let arena = load_map_file(&maps_dir.join("testing-arena.json")).unwrap_or_else(|| WorldMap::empty("arena", 12.0, 12.0));
         let page = args.page.as_deref().and_then(Page::from_name).unwrap_or(Page::Dashboard);
-        let capture = args.capture.clone().map(|out| capture::Script::new(out, page, args.demo.clone()));
+        let capture = (args.capture.is_some() || args.record.is_some())
+            .then(|| capture::Script::new(args.capture.clone(), args.record.clone(), page, args.demo.clone()));
         let mut app = RoboApp {
             history: HistoryState::new(),
             settings,

@@ -18,6 +18,14 @@ testing), 4 (software evolution: genetic programming, program repair, genetic im
 extensions: planar robotic arm, multi-robot task allocation, dynamic environments).** Parts that are not
 implemented are marked as such, in this README and inside the application.
 
+## Demo
+
+[![RoboSBSE feature tour: one minute, silent](docs/media/robosbse-demo.gif)](docs/media/robosbse-demo.mp4)
+
+A one-minute tour of all features, recorded from the running application (click for the MP4). Every segment
+is a real run: the engine executes the experiment, and the replay shows the actual result. Regenerate it
+with `python scripts/video/make_demo.py` (release UI build, engine jar, ffmpeg).
+
 | Simulation Laboratory | Search-Based Testing |
 |---|---|
 | ![lab](docs/images/lab.png) | ![testing](docs/images/testing.png) |
@@ -38,7 +46,7 @@ implemented are marked as such, in this README and inside the application.
 | **Multi-robot task allocation** (Phase 5) | **Dynamic obstacle course** (Phase 5) |
 | ![fleet](docs/images/fleet.png) | ![dynamic](docs/images/dynamic.png) |
 
-All screenshots were captured by the application itself (`--capture`) after running real experiments.
+All screenshots and the demo video were captured by the application itself (`--capture`, `--record`) after running real experiments.
 
 ## What is implemented
 
