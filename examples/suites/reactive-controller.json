@@ -1,0 +1,31 @@
+{
+  "schema": "robosbse.suite/1",
+  "name": "reactive-controller",
+  "description": "Every benchmark and coverage campaign that runs the reactive controller family (Experiments B and C, the BUG-3 coverage campaign). Rerun after the perception fix of the correct controller (corner guard and 4-scan point memory), which every faulty variant inherits.",
+  "items": [
+    {
+      "benchmark": "../benchmarks/experiment-C-bug1.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-C-bug2.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-C-full-bug1.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-C-full-bug2.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-C-bug3-whitebox.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-C-bug3-whitebox-velocity.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-B-controller-tuning.json"
+    },
+    {
+      "coverage": "../coverage/coverage-bug3-ga.json"
+    }
+  ]
+}

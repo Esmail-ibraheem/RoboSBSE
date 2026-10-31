@@ -1,0 +1,51 @@
+{
+  "schema": "robosbse.benchmark/1",
+  "name": "experiment-C-correct-controller",
+  "description": "Search-based testing of the correct reactive controller: how often does a collision-guided GA find a collision within 2000 scenarios, with the original perception (24 rays, last scan only) and with the perception fix (corner guard and 4-scan point memory)? Compared by time to the first collision.",
+  "runs": 20,
+  "baseSeed": 1,
+  "threads": 4,
+  "budget": {
+    "maxEvaluations": 2000
+  },
+  "compareBy": "timeToTarget",
+  "options": {
+    "stopOnTarget": true,
+    "maxTargets": 1
+  },
+  "problem": {
+    "type": "controller-testing",
+    "map": "builtin:testing-arena",
+    "params": {
+      "controller": "reactive",
+      "properties": "safety",
+      "fitness": "collision",
+      "maxSteps": 1200,
+      "simulationSeed": 1
+    }
+  },
+  "algorithms": [
+    {
+      "type": "genetic-algorithm",
+      "label": "GA vs original perception",
+      "params": {
+        "populationSize": 50
+      },
+      "controllerParams": {
+        "cornerGuard": false,
+        "pointMemory": 1
+      }
+    },
+    {
+      "type": "genetic-algorithm",
+      "label": "GA vs fixed perception",
+      "params": {
+        "populationSize": 50
+      },
+      "controllerParams": {
+        "cornerGuard": true,
+        "pointMemory": 4
+      }
+    }
+  ]
+}

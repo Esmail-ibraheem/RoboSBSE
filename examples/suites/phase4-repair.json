@@ -1,0 +1,25 @@
+{
+  "schema": "robosbse.suite/1",
+  "name": "phase4-repair",
+  "description": "The program-repair (Experiment F, five subjects) and genetic-improvement benchmarks of phase4.json, without the genetic-programming experiment (E), which does not run the reactive controller.",
+  "items": [
+    {
+      "benchmark": "../benchmarks/experiment-F-rb1-stopping-distance.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb2-comparison.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb3-turn-direction.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb4-boundary-check.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-F-rb5-sensor-mirror.json"
+    },
+    {
+      "benchmark": "../benchmarks/experiment-GI-reactive.json"
+    }
+  ]
+}

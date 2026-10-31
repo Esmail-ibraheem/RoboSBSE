@@ -254,6 +254,11 @@ semantics of moving obstacles, timed obstacles and zones.
   24 range rays (15 degrees apart), so a rectangle corner between two rays is invisible. One case collides even
   with perfect sensing; scan dropout makes it more likely; with 64 rays all three pass. The defect is
   documented, not fixed: fixing it changes every earlier result that uses the reactive controller family.
+  **Update (perception fix):** the controller now adds hidden-corner points between adjacent ray hits and
+  uses the obstacle points of its last four scans. This removes the recorded collisions and makes them
+  rarer under search (a GA finds a collision in 1 of 20 runs instead of 7 of 20), but search still finds one
+  (`examples/faulty-controllers/known-issues/`). Experiments B, C and F and the coverage campaign still have to
+  be rerun with it ([perception-fix.md](../experiments/perception-fix.md)).
   Tests of the repair and improvement modules exclude scenarios in which the reference violates a property.
 - No failures being found is not evidence of correctness.
 - Phase 5: the grid planners ignore moving obstacles, multi-robot replays report robot-robot conflicts

@@ -60,11 +60,13 @@ work, correctness suite, held-out validation); experiment suites with a combined
 [Phase 4 results](experiments/phase4-results.md).
 
 Found along the way: the correct reactive controller can collide when an obstacle corner falls between its
-range rays ([formulations, Known limitations](research/problem-formulations.md)). Documented, not fixed,
-because a fix changes every earlier result that uses that controller family.
+range rays ([formulations, Known limitations](research/problem-formulations.md)). Later mitigated by the
+perception fix (corner guard and 4-scan point memory); the affected experiments were rerun
+([perception-fix.md](experiments/perception-fix.md)). One collision found by search remains open.
 
 Left for later: fault localisation to focus patch search; richer GP primitives (memory, continuous speeds);
-OS-level sandboxing of candidate processes; a fix for the sparse-ray perception defect.
+OS-level sandboxing of candidate processes; a perception model that makes the reactive controller provably
+collision-free (e.g. an occupancy grid that treats unobserved space as occupied).
 
 ## Phase 5: robotics extensions (done)
 

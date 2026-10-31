@@ -1,0 +1,53 @@
+{
+  "schema": "robosbse.known-issue/1",
+  "controller": "reactive",
+  "issue": "The correct reactive controller (corner guard and 4-scan point memory) still collides: its safety checks only know sampled obstacle points, and a surface between samples can protrude further than the guard assumes.",
+  "evidence": {
+    "neither": "[collision]-0.0051",
+    "asFound": "[collision]-0.0067",
+    "noScanDropout": "[collision]-0.0051",
+    "originalController": "ok(deadlock)",
+    "noSensorNoise": "[collision]-0.0067",
+    "rays64": "ok(deadlock)"
+  },
+  "violated": [
+    "collision"
+  ],
+  "scenario": {
+    "start": {
+      "x": 8.944693027002561,
+      "y": 2.5462553849063845,
+      "theta": -1.809456005547409
+    },
+    "goal": {
+      "x": 3.742035457042769,
+      "y": 3.3597005905223534
+    },
+    "sensorNoise": 0.017136549594702195,
+    "scanDropout": 0.44968173461051447,
+    "battery": 0.6973630657213974,
+    "speedLimit": 1.0,
+    "freeDistance": 1.5,
+    "obstacles": [
+      {
+        "type": "rect",
+        "x": 5.490983407354026,
+        "y": 1.7574331077609977,
+        "w": 1.467684501429516,
+        "h": 1.467684501429516
+      },
+      {
+        "type": "circle",
+        "x": 7.098978939743232,
+        "y": 6.677609783578941,
+        "r": 0.3134213462340269
+      }
+    ]
+  },
+  "provenance": {
+    "found": "direct search for collisions of the correct controller after the fix (GA, population 50, collision robustness, 2000 evaluations)",
+    "evaluation": 638,
+    "seed": 19
+  },
+  "status": "open"
+}

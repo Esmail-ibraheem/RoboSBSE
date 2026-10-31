@@ -20,6 +20,7 @@ import org.robosbse.problems.NavigationProblem;
 import org.robosbse.protocol.Json;
 import org.robosbse.simulation.MapLibrary;
 import org.robosbse.simulation.RobotSpec;
+import org.robosbse.simulation.controllers.ReactiveAvoidanceController;
 
 class Phase3ExperimentsTest {
 
@@ -81,7 +82,7 @@ class Phase3ExperimentsTest {
         ObjectNode out = CoverageCampaign.run(campaign, null, new RunControl(), null, dir);
         assertEquals(CoverageCampaign.SCHEMA, out.path("schema").asText());
         int outcomes = out.path("summary").path("outcomes").asInt();
-        assertEquals(28, outcomes);
+        assertEquals(2 * ReactiveAvoidanceController.BRANCHES.size(), outcomes);
         assertEquals(outcomes, out.path("targets").size());
         assertTrue(out.path("summary").path("evaluations").asLong() <= 150);
         assertTrue(out.path("summary").path("covered").asInt() >= 20);

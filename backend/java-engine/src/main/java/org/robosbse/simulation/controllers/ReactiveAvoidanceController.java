@@ -18,8 +18,17 @@ import org.robosbse.testing.coverage.Probe;
  * <p>Per step it
  * <ol>
  *   <li><b>perceives</b>: converts valid range readings into world-frame obstacle points. Because
- *       Phase 1 obstacles are static, the points of the last valid scan stay correct, so a lost scan
- *       is handled by reusing them;</li>
+ *       obstacles are static, observed points stay correct, so a lost scan is handled by reusing them,
+ *       and the points of the last {@code pointMemory} (default 4) valid scans are used together: as the
+ *       robot moves and turns, earlier rays fill in surface between the current ones. <b>Corner
+ *       guard</b>: an obstacle corner pointing at the robot between two adjacent rays is hit by neither.
+ *       For every pair of adjacent rays that both hit at most {@code 1.5 * (radius + margin)} apart, the
+ *       controller adds the point where a right-angled corner joining the two hit points would come
+ *       closest to the robot (on the circle with the two points as diameter). Heading selection and the
+ *       speed limiter use all these points. Both measures were added after search-based testing found
+ *       collisions of this controller ({@code examples/faulty-controllers/fixed-issues});
+ *       {@code cornerGuard = false, pointMemory = 1} restores the earlier behaviour. They reduce but do
+ *       not remove such collisions ({@code examples/faulty-controllers/known-issues});</li>
  *   <li><b>checks completion</b>: reports the task done when the Euclidean distance to the goal is
  *       below {@code completionFactor * goalTolerance};</li>
  *   <li><b>selects a heading</b>: among 37 candidate directions around the goal bearing it picks the
@@ -62,6 +71,7 @@ public class ReactiveAvoidanceController implements Controller, Instrumented {
     protected static final int ARC_CLEAR = 11;
     protected static final int STRAIGHT_ARC = 12;
     protected static final int ARC_BLOCKED = 13;
+    protected static final int CORNER_PAIR = 14;
 
     /**
      * The instrumented decisions. A parent is the decision outcome under which the decision is
@@ -91,7 +101,9 @@ public class ReactiveAvoidanceController implements Controller, Instrumented {
                     "speed-loop", true),
             Branch.under("straight-arc", "|omega / v| < 1e-6: the braking arc is a straight segment", "speed-loop", true),
             Branch.under("arc-blocked", "after < min(required, now) - 0.005: an arc sample comes too close to a point",
-                    "speed-loop", true));
+                    "speed-loop", true),
+            Branch.under("corner-pair", "rayHit[i] && rayHit[i+1] && chord <= 1.5 (radius + margin): adjacent hits get "
+                    + "a hidden-corner point", "scan-valid", true));
 
     /** Coverage probe; records nothing unless a trace is attached. */
     protected final Probe probe = new Probe();
@@ -114,6 +126,18 @@ public class ReactiveAvoidanceController implements Controller, Instrumented {
     protected double[] pointsY = new double[0];
     protected int pointCount;
     private double previousHeading = Double.NaN;
+    /** Number of adjacent ray pairs checked by the corner guard: all of them, or 0 when it is off. */
+    private int guardPairs;
+    private double[] rayX = new double[0];
+    private double[] rayY = new double[0];
+    private boolean[] rayHit = new boolean[0];
+    /** Point memory: the points of the last {@code memScans} valid scans (ring buffer of scans). */
+    private int memScans;
+    private double[][] memX = new double[0][];
+    private double[][] memY = new double[0][];
+    private int[] memCount = new int[0];
+    private int memHead;
+    private int memFilled;
 
     // Robot-frame copies, recomputed every step.
     private double[] fx = new double[0];
@@ -159,10 +183,21 @@ public class ReactiveAvoidanceController implements Controller, Instrumented {
         deceleration = setup.params().getDouble("decelerationFraction", 0.8) * robot.maxAcceleration();
         completionFactor = setup.params().getDouble("completionFactor", 0.8);
         freeDistance = setup.params().getDouble("freeDistance", 1.0);
-        pointsX = new double[robot.sensorRays()];
-        pointsY = new double[robot.sensorRays()];
-        fx = new double[robot.sensorRays()];
-        fy = new double[robot.sensorRays()];
+        // Boolean.compare gives 1 or 0: the guard is configuration, not a decision of the controller.
+        guardPairs = robot.sensorRays() * Boolean.compare(setup.params().getBool("cornerGuard", true), false);
+        rayX = new double[robot.sensorRays()];
+        rayY = new double[robot.sensorRays()];
+        rayHit = new boolean[robot.sensorRays()];
+        memScans = Math.max(1, setup.params().getInt("pointMemory", 4));
+        memX = new double[memScans][2 * robot.sensorRays()];
+        memY = new double[memScans][2 * robot.sensorRays()];
+        memCount = new int[memScans];
+        memHead = 0;
+        memFilled = 0;
+        pointsX = new double[memScans * 2 * robot.sensorRays()];
+        pointsY = new double[memScans * 2 * robot.sensorRays()];
+        fx = new double[memScans * 2 * robot.sensorRays()];
+        fy = new double[memScans * 2 * robot.sensorRays()];
         pointCount = 0;
         previousHeading = Double.NaN;
     }
@@ -173,13 +208,19 @@ public class ReactiveAvoidanceController implements Controller, Instrumented {
             pointCount = 0;
             for (int i = 0; i < obs.rays(); i++) {
                 double r = obs.range(i);
+                double a = obs.theta() + robot.rayAngle(i);
+                rayX[i] = obs.x() + r * Math.cos(a);
+                rayY[i] = obs.y() + r * Math.sin(a);
+                rayHit[i] = false;
                 if (probe.lt(RAY_HIT, r, robot.sensorRange() - 1e-6)) {
-                    double a = obs.theta() + robot.rayAngle(i);
-                    pointsX[pointCount] = obs.x() + r * Math.cos(a);
-                    pointsY[pointCount] = obs.y() + r * Math.sin(a);
+                    rayHit[i] = true;
+                    pointsX[pointCount] = rayX[i];
+                    pointsY[pointCount] = rayY[i];
                     pointCount++;
                 }
             }
+            addCornerPoints(obs, Math.min(guardPairs, obs.rays()));
+            remember();
         } else {
             onScanLost(obs);
         }
@@ -229,6 +270,54 @@ public class ReactiveAvoidanceController implements Controller, Instrumented {
         vDesired = Math.min(vDesired, approachGain * distanceToGoal + 0.03);
         double v = safeSpeed(obs, vDesired, omega);
         return Command.drive(v, omega);
+    }
+
+    /**
+     * Corner guard: for adjacent rays that both hit at most {@code 1.5 * (radius + margin)} apart, adds the
+     * closest point to the robot at which a right-angled corner joining the two hit points can lie. The
+     * factor 1.5 is the smallest of 1.25, 1.5, 1.75 and 2 that removes the three originally recorded corner
+     * collisions; 2 makes the controller deadlock on the obstacle course (docs/experiments/perception-fix.md).
+     */
+    private void addCornerPoints(Observation obs, int pairs) {
+        double gap = 1.5 * (robot.radius() + margin);
+        for (int i = 0; i < pairs; i++) {
+            int j = (i + 1) % pairs;
+            double chord = Math.hypot(rayX[j] - rayX[i], rayY[j] - rayY[i]);
+            if (cornerPair(rayHit[i], rayHit[j], chord, gap)) {
+                double mx = (rayX[i] + rayX[j]) / 2;
+                double my = (rayY[i] + rayY[j]) / 2;
+                double d = Math.hypot(mx - obs.x(), my - obs.y());
+                pointsX[pointCount] = mx - chord / 2 * (mx - obs.x()) / d;
+                pointsY[pointCount] = my - chord / 2 * (my - obs.y()) / d;
+                pointCount++;
+            }
+        }
+    }
+
+    /** {@code hitA && hitB && chord <= gap}, with conjunction branch distances when traced. */
+    private boolean cornerPair(boolean hitA, boolean hitB, double chord, double gap) {
+        boolean pair = hitA && hitB && chord <= gap;
+        if (probe.trace() == null) {
+            return pair;
+        }
+        double toTrue = (hitA ? 0 : 1) + (hitB ? 0 : 1) + Math.max(0, chord - gap);
+        double toFalse = Math.min(Math.min(hitA ? 1 : 0, hitB ? 1 : 0), chord > gap ? 0 : gap - chord + CoverageTrace.K);
+        return probe.record(CORNER_PAIR, pair, toTrue, toFalse);
+    }
+
+    /** Stores this scan's points and makes the points of the remembered scans the current point set. */
+    private void remember() {
+        System.arraycopy(pointsX, 0, memX[memHead], 0, pointCount);
+        System.arraycopy(pointsY, 0, memY[memHead], 0, pointCount);
+        memCount[memHead] = pointCount;
+        memHead = (memHead + 1) % memScans;
+        memFilled = Math.min(memFilled + 1, memScans);
+        pointCount = 0;
+        for (int k = 0; k < memFilled; k++) {
+            System.arraycopy(memX[k], 0, pointsX, pointCount, memCount[k]);
+            System.arraycopy(memY[k], 0, pointsY, pointCount, memCount[k]);
+            pointCount += memCount[k];
+        }
     }
 
     /** Hook: perception when the scan is lost. Correct behaviour keeps the last valid points. */

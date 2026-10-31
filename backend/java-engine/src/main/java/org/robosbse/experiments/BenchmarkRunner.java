@@ -61,6 +61,21 @@ public final class BenchmarkRunner {
         return copy;
     }
 
+    /**
+     * The problem configuration with an algorithm's {@code controllerParams} merged into its controller
+     * parameters, e.g. to compare two configurations of the system under test with the same search.
+     */
+    static JsonNode withControllerOverrides(JsonNode problem, JsonNode overrides) {
+        if (!overrides.isObject() || overrides.isEmpty()) {
+            return problem;
+        }
+        ObjectNode copy = problem.deepCopy();
+        ObjectNode params = copy.path("controllerParams").isObject() ? (ObjectNode) copy.path("controllerParams")
+                : copy.putObject("controllerParams");
+        params.setAll((ObjectNode) overrides);
+        return copy;
+    }
+
     private BenchmarkRunner() {
     }
 
@@ -121,7 +136,8 @@ public final class BenchmarkRunner {
                     config.put("name", benchmark.path("name").asText("benchmark"));
                     config.put("seed", spec.seed());
                     config.set("budget", budget);
-                    config.set("problem", withOverrides(problem, spec.algorithm().path("problemParams")));
+                    config.set("problem", withControllerOverrides(withOverrides(problem, spec.algorithm().path("problemParams")),
+                            spec.algorithm().path("controllerParams")));
                     ObjectNode algorithm = config.putObject("algorithm");
                     algorithm.put("type", spec.algorithm().path("type").asText());
                     algorithm.set("params", spec.algorithm().path("params").isObject()

@@ -13,6 +13,24 @@ Source: `backend/java-engine/src/main/java/org/robosbse/simulation/controllers/f
 
 The correct controller showed no safety violation in any of these campaigns (2 000 random scenarios plus
 36 000 GA-generated scenarios across four fitness guides). The worst clearance it reached was 0.08 m.
+The difficulty figures above were measured in Phases 1–3, before the perception fix described next; they
+have not yet been remeasured with it ([docs/experiments/perception-fix.md](../../docs/experiments/perception-fix.md)).
+
+## Fixed and known issues of the correct controller
+
+Search later found collisions of the **correct** controller (penetration of a few millimetres): its safety
+checks only know the obstacle points hit by its 24 range rays, so a surface between two rays, typically a
+corner, can come closer than any sampled point, mostly while scans are lost. The perception fix (corner guard
+and 4-scan point memory, `cornerGuard`/`pointMemory` parameters) is described and measured in
+[perception-fix.md](../../docs/experiments/perception-fix.md).
+
+- `fixed-issues/`: seven scenarios that collide with an earlier configuration (`collidesWith`) and pass with
+  the default one. Three were found in Phase 4 against the original controller, four against an intermediate
+  fix (corner guard alone).
+- `known-issues/`: one scenario in which the fixed controller still collides (5–7 mm), even with perfect
+  sensing. The fix reduces such collisions but does not remove them.
+
+`ReactivePerceptionTest` replays all of them on every build.
 
 ## Regression records
 

@@ -60,9 +60,9 @@ class PatchingTest {
             if (p.kind() == MutationPoint.Kind.LITERAL && p.original().equals("1.5")) {
                 int c = p.alternatives().indexOf("1.0");
                 assertTrue(c >= 0);
+                // The template has two 1.5 literals (boundary check, corner-guard gap); one edit must be the fix.
                 String patched = catalog.apply(Patch.of(List.of(new Patch.Edit(p.index(), c))));
-                assertTrue(patched.contains("if (limit > robot.maxSpeed() * 1.0)"));
-                found = true;
+                found |= patched.contains("if (limit > robot.maxSpeed() * 1.0)");
             }
         }
         assertTrue(found);

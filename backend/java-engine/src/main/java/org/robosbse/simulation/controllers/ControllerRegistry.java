@@ -43,7 +43,9 @@ public final class ControllerRegistry {
             ParamSpec.real("approachGain", 0.6, 0.05, 10, "Final-approach speed gain."),
             ParamSpec.real("decelerationFraction", 0.8, 0.05, 1, "Assumed braking deceleration as a fraction of the limit."),
             ParamSpec.real("completionFactor", 0.8, 0.05, 1, "Report completion inside this fraction of the goal tolerance."),
-            ParamSpec.real("freeDistance", 1.0, 0.1, 10, "Free corridor length required for a heading (m)."));
+            ParamSpec.real("freeDistance", 1.0, 0.1, 10, "Free corridor length required for a heading (m)."),
+            ParamSpec.bool("cornerGuard", true, "Add hidden-corner points between adjacent ray hits (false = earlier behaviour)."),
+            ParamSpec.integer("pointMemory", 4, 1, 16, "Valid scans whose obstacle points are used together (1 = earlier behaviour)."));
 
     private static final Map<String, Descriptor> DESCRIPTORS = new LinkedHashMap<>();
 

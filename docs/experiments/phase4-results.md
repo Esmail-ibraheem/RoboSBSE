@@ -1,5 +1,10 @@
 # Phase 4 results
 
+> **Update 2026-10-31.** The correct reactive controller (and the repair template derived from it) received a
+> perception fix ([perception-fix.md](perception-fix.md)). The numbers below were measured **before** the fix.
+> The Experiment E reference row is unchanged by it; Experiment F and genetic improvement still have to be
+> rerun, and RB2–RB5 and genetic improvement have still never run as benchmarks.
+
 Measured on 2026-10-28 (engine 0.1.0, Java 21.0.12, Windows 10, 8 logical processors, 16 GB RAM).
 Configurations: `examples/benchmarks/experiment-E-gp.json`, `experiment-F-*.json`, `experiment-GI-reactive.json`;
 all of them together: `examples/suites/phase4.json`.
@@ -122,8 +127,9 @@ Varying one factor at a time:
 Cause: the controller's safety checks only know the obstacle points hit by its 24 range rays (15° apart), so
 an obstacle corner between two rays is invisible to the braking-arc check. Scan dropout makes this more likely,
 but seed 30 collides with perfect sensing. The scenarios are in `examples/faulty-controllers/known-issues/`.
-The defect is documented, not fixed: every injected-bug variant and every earlier result uses this
-controller family.
+The defect was first documented and not fixed, because every injected-bug variant and every earlier result
+uses this controller family. It has since been mitigated, not removed:
+[perception-fix.md](perception-fix.md).
 
 ## Threats to validity
 

@@ -12,13 +12,15 @@ import org.robosbse.simulation.controllers.ControllerSetup;
  * <b>Incorrect turn direction</b> (repair subject RB3): The steering sign constant is -1, so the controller turns away from the heading it selected.
  *
  * <p>Generated from the RoboSBSE subject template: map-free reactive navigation (heading selection over
- * free corridors, braking-distance speed limiter, low-battery speed boost clamped to the robot's maximum).
+ * free corridors, obstacle points of the last four scans, hidden-corner points between adjacent ray
+ * hits, braking-distance speed limiter, low-battery speed boost clamped to the robot's maximum).
  * 
  */
 public class TurnDirectionBug implements Controller, WorkCounter {
 
     private static final int HEADING_CANDIDATES = 37;
     private static final int ARC_SAMPLES = 6;
+    private static final int MEMORY_SCANS = 4;
     private static final double STEERING_SIGN = -1.0;
 
     private RobotSpec robot;
@@ -36,6 +38,14 @@ public class TurnDirectionBug implements Controller, WorkCounter {
     private double[] pointsX = new double[0];
     private double[] pointsY = new double[0];
     private int pointCount;
+    private double[] rayX = new double[0];
+    private double[] rayY = new double[0];
+    private boolean[] rayHit = new boolean[0];
+    private double[][] memX = new double[0][];
+    private double[][] memY = new double[0][];
+    private int[] memCount = new int[0];
+    private int memHead;
+    private int memFilled;
     private double previousHeading = Double.NaN;
     private double[] fx = new double[0];
     private double[] fy = new double[0];
@@ -70,10 +80,18 @@ public class TurnDirectionBug implements Controller, WorkCounter {
         deceleration = setup.params().getDouble("decelerationFraction", 0.8) * robot.maxAcceleration();
         completionFactor = setup.params().getDouble("completionFactor", 0.8);
         freeDistance = setup.params().getDouble("freeDistance", 1.0);
-        pointsX = new double[robot.sensorRays()];
-        pointsY = new double[robot.sensorRays()];
-        fx = new double[robot.sensorRays()];
-        fy = new double[robot.sensorRays()];
+        rayX = new double[robot.sensorRays()];
+        rayY = new double[robot.sensorRays()];
+        rayHit = new boolean[robot.sensorRays()];
+        memX = new double[MEMORY_SCANS][2 * robot.sensorRays()];
+        memY = new double[MEMORY_SCANS][2 * robot.sensorRays()];
+        memCount = new int[MEMORY_SCANS];
+        memHead = 0;
+        memFilled = 0;
+        pointsX = new double[MEMORY_SCANS * 2 * robot.sensorRays()];
+        pointsY = new double[MEMORY_SCANS * 2 * robot.sensorRays()];
+        fx = new double[MEMORY_SCANS * 2 * robot.sensorRays()];
+        fy = new double[MEMORY_SCANS * 2 * robot.sensorRays()];
         pointCount = 0;
         previousHeading = Double.NaN;
         work = 0;
@@ -85,13 +103,19 @@ public class TurnDirectionBug implements Controller, WorkCounter {
             pointCount = 0;
             for (int i = 0; i < obs.rays(); i++) {
                 double r = obs.range(i);
+                double a = obs.theta() + robot.rayAngle(i);
+                rayX[i] = obs.x() + r * Math.cos(a);
+                rayY[i] = obs.y() + r * Math.sin(a);
+                rayHit[i] = false;
                 if (r < robot.sensorRange() - 1e-6) {
-                    double a = obs.theta() + robot.rayAngle(i);
-                    pointsX[pointCount] = obs.x() + r * Math.cos(a);
-                    pointsY[pointCount] = obs.y() + r * Math.sin(a);
+                    rayHit[i] = true;
+                    pointsX[pointCount] = rayX[i];
+                    pointsY[pointCount] = rayY[i];
                     pointCount++;
                 }
             }
+            addCornerPoints(obs);
+            remember();
         }
         double dx = goalX - obs.x();
         double dy = goalY - obs.y();
@@ -135,6 +159,37 @@ public class TurnDirectionBug implements Controller, WorkCounter {
         vDesired = Math.min(vDesired, approachGain * distanceToGoal + 0.03);
         double v = safeSpeed(obs, vDesired, omega);
         return Command.drive(v, omega);
+    }
+
+    private void addCornerPoints(Observation obs) {
+        double gap = 1.5 * (robot.radius() + margin);
+        int pairs = obs.rays();
+        for (int i = 0; i < pairs; i++) {
+            int j = (i + 1) % pairs;
+            double chord = Math.hypot(rayX[j] - rayX[i], rayY[j] - rayY[i]);
+            if (rayHit[i] && rayHit[j] && chord <= gap) {
+                double mx = (rayX[i] + rayX[j]) / 2;
+                double my = (rayY[i] + rayY[j]) / 2;
+                double d = Math.hypot(mx - obs.x(), my - obs.y());
+                pointsX[pointCount] = mx - chord / 2 * (mx - obs.x()) / d;
+                pointsY[pointCount] = my - chord / 2 * (my - obs.y()) / d;
+                pointCount++;
+            }
+        }
+    }
+
+    private void remember() {
+        System.arraycopy(pointsX, 0, memX[memHead], 0, pointCount);
+        System.arraycopy(pointsY, 0, memY[memHead], 0, pointCount);
+        memCount[memHead] = pointCount;
+        memHead = (memHead + 1) % MEMORY_SCANS;
+        memFilled = Math.min(memFilled + 1, MEMORY_SCANS);
+        pointCount = 0;
+        for (int k = 0; k < memFilled; k++) {
+            System.arraycopy(memX[k], 0, pointsX, pointCount, memCount[k]);
+            System.arraycopy(memY[k], 0, pointsY, pointCount, memCount[k]);
+            pointCount += memCount[k];
+        }
     }
 
     private boolean goalReached(double dx, double dy) {

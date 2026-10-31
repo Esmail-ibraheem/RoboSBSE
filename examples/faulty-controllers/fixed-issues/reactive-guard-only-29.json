@@ -1,0 +1,49 @@
+{
+  "schema": "robosbse.known-issue/1",
+  "controller": "reactive",
+  "issue": "With the corner guard alone (no point memory), the reactive controller collides: the guard changes the trajectory, and a corner between the rays is met elsewhere, mostly while scans are lost.",
+  "evidence": "collides with cornerGuard=true, pointMemory=1; passes with the original controller, with 64 rays, with no scan dropout, and with the default perception (guard and 4-scan memory)",
+  "violated": [
+    "collision"
+  ],
+  "status": "fixed: passes with the default perception (corner guard and 4-scan point memory)",
+  "collidesWith": {
+    "cornerGuard": true,
+    "pointMemory": 1
+  },
+  "scenario": {
+    "start": {
+      "x": 6.756679992109013,
+      "y": 7.422005464394603,
+      "theta": -1.9779797008811701
+    },
+    "goal": {
+      "x": 10.280466515072973,
+      "y": 2.500727577592591
+    },
+    "sensorNoise": 0.012069323057415812,
+    "scanDropout": 0.2623605532783454,
+    "battery": 0.9371361102962746,
+    "speedLimit": 0.9022223159878991,
+    "freeDistance": 1.2703729077860981,
+    "obstacles": [
+      {
+        "type": "rect",
+        "x": 10.11989833952659,
+        "y": 1.1554336094318343,
+        "w": 0.7947711179054628,
+        "h": 0.7947711179054628
+      },
+      {
+        "type": "circle",
+        "x": 9.125613258127169,
+        "y": 5.454075833818294,
+        "r": 0.2221382226633086
+      }
+    ]
+  },
+  "provenance": {
+    "found": "while regenerating the failing tests of repair subject RB1 with the corner guard alone (GA, collision robustness against the faulty subject)",
+    "seed": 29
+  }
+}

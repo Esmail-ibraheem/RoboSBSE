@@ -191,6 +191,7 @@ Engine packages: `core` (abstractions, context, Pareto utilities, representation
 - [Coverage-guided testing](docs/research/coverage.md): instrumentation, branch distance, approach level, campaigns
 - [Genetic programming](docs/algorithms/genetic-programming.md) and [program repair / genetic improvement](docs/research/program-repair.md)
 - [Robotics extensions](docs/research/robotics-extensions.md): robotic arm, multi-robot allocation, dynamic environments
+- [Perception fix of the reactive controller](docs/experiments/perception-fix.md): the collision defect, variants tried, validation, reruns still to do
 - [Problem formulations](docs/research/problem-formulations.md): representations, fitness, constraints, simulation assumptions, testing methodology
 - [Faulty controllers](examples/faulty-controllers/README.md): the four injected defects and their regression records
 - [Phase 1](docs/experiments/phase1-results.md), [Phase 2](docs/experiments/phase2-results.md),
@@ -208,7 +209,7 @@ Engine packages: `core` (abstractions, context, Pareto utilities, representation
 - Failure minimisation is greedy (1-minimal for its operations), not full delta debugging.
 - Multi-robot coordination is **not implemented**: robots do not avoid each other, and replays report their conflicts without resolving them.
 - The robotic arm is kinematic (no gravity, torques or dynamics; effort is a proxy for energy), links collide only with obstacles, and the configuration-space planner exists for two-link arms only.
-- The correct reactive controller can collide when an obstacle corner falls between two of its 24 range rays (found in Phase 4, documented in the formulations, not fixed).
+- The correct reactive controller could collide when an obstacle surface between two of its 24 range rays came closer than any sampled point (found in Phase 4). The perception fix (corner guard and 4-scan point memory) removes the recorded cases and makes such collisions rarer under search (1 of 20 GA runs instead of 7 of 20), but one scenario still collides by a few millimetres (`examples/faulty-controllers/known-issues/`).
 - Plausible patches are not proven correct; the repair module validates them on held-out tests and compares them with a reference fix.
 - Coverage is decision coverage of the hand-instrumented reactive controller classes only; other controllers report it as unavailable.
 - The maze is not solved by any implemented method with the fixed-length route encoding.
