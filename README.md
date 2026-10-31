@@ -1,4 +1,4 @@
-# RoboSBSE — a Search-Based Robotics and Software Engineering Laboratory
+# RoboSBSE - a Search-Based Robotics and Software Engineering Laboratory
 
 RoboSBSE is a 2D robotics laboratory for **Search-Based Software Engineering (SBSE)**. It does two jobs:
 
