@@ -26,24 +26,38 @@ adjacent rays that both hit at most `g · (radius + margin)` apart, add the poin
 joining the two hit points would come closest to the robot (on the circle with the two points as diameter).
 "Point memory k": use the obstacle points of the last `k` valid scans (obstacles are static).
 
-| Variant | Recorded collisions still colliding | Arena: reached / 337 | Maps reached / 13 | GA finds a collision |
-|---|---|---|---|---|
-| Original (24 rays, last scan) | 3 of 3 | 330 | 9 | **7 / 20** |
-| Corner guard, g = 2, all decisions | 0 of 3 | 329 | 8 (obstacle course deadlocks) | – |
-| Corner guard, g = 1.5, all decisions | 0 of 3, but **4 new collisions** found by the RB1 test search | 329 | 9 | 1 / 8 |
-| Corner guard only in the speed limiter | 1 of 3 | 275 (deadlocks) | 4 | – |
-| Point memory 3 | 1 of 7 | 330 | 9 | 6 / 20 |
-| Point memory 4 | 0 of 7 | 330 | 9 | 3 / 20 |
-| Point memory 5 | 0 of 7 | 330 | 9 | 4 / 20 |
-| Hard minimum clearance 0.08 m / 0.15 m | 2 of 7 | 330 | 9 | 8 / 20, 6 / 20 |
-| **Corner guard (g = 1.5) + point memory 4** | **0 of 7** | 329 | 9 | **1 / 20** |
-| Corner guard + point memory 6 | 0 of 7 | 327 | 9 | 2 / 20 |
+Rows marked **R** are reproduced by the committed script (`cornerGuard:pointMemory` variants on the final
+code; 20 search seeds):
 
-"7" counts the 3 original scenarios plus the 4 in which the corner guard alone collided (also in
-`fixed-issues/`, each recording the configuration it collides with). The guard factor 1.5 is the smallest of
-1.0, 1.25, 1.5, 1.75 and 2 that removes the three original collisions; 2 deadlocks on the obstacle course.
-Using the guard points only in the speed limiter fails: heading selection then steers into gaps that the
-limiter refuses, and the robot deadlocks.
+```bash
+java -cp backend/java-engine/build/libs/robosbse-engine.jar scripts/perception/PerceptionVariants.java 20 false:1 true:1 false:3 false:4 false:5 true:4 true:6
+```
+
+Rows marked **E** were exploratory: measured during the investigation with temporary code that was not kept
+(other guard factors, the guard in the speed limiter only, a hard minimum clearance), so they cannot be rerun
+from the repository.
+
+| | Variant | Recorded collision scenarios still colliding (of 7) | Arena: reach the goal (of 337) | Maps reached (of 13) | GA finds a collision |
+|---|---|---|---|---|---|
+| R | Original (24 rays, last scan) | 3 | 330 | 9 | **7 / 20** |
+| R | Corner guard (g = 1.5) alone | 4 | 329 | 9 | 3 / 20 |
+| R | Point memory 3 | 1 | 330 | 9 | 6 / 20 |
+| R | Point memory 4 | 0 | 330 | 9 | 3 / 20 |
+| R | Point memory 5 | 0 | 330 | 9 | 4 / 20 |
+| R | **Corner guard (g = 1.5) + point memory 4 (the fix)** | **0** | 329 | 9 | **1 / 20** |
+| R | Corner guard + point memory 6 | 0 | 327 | 9 | 2 / 20 |
+| E | Corner guard, g = 2 | 0 of the 3 original | 329 | 8 (obstacle course deadlocks) | – |
+| E | Corner guard, g = 1.0 or 1.25 | 1 of the 3 original | 330 | 9 | – |
+| E | Corner guard only in the speed limiter (g = 2) | 1 of the 3 original | 275 (deadlocks) | 4 | – |
+| E | Hard minimum clearance 0.08 m / 0.15 m (no memory) | 2 | 330 | 9 | 8 / 20, 6 / 20 |
+
+The 7 scenarios are the 3 original collisions (the original controller collides in all of them) and 4 in
+which the corner guard alone collided, found while regenerating RB1's tests (also in `fixed-issues/`, each
+recording the configuration it collides with). The guard factor 1.5 is the smallest of 1.0, 1.25, 1.5, 1.75 and
+2 that removes the three original collisions; 2 deadlocks on the obstacle course. Using the guard points only in
+the speed limiter fails: heading selection then steers into gaps that the limiter refuses, and the robot
+deadlocks. One-factor analyses of single scenarios (noise, dropout, 64 rays, before the fix):
+`scripts/perception/ScenarioFactors.java <scenario.json>`.
 
 ## The fix
 
